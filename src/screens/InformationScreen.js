@@ -154,33 +154,24 @@ export default function InformationScreen({ navigation }) {
                           onPress={() => toggleHomeCheck(lIdx)}
                           style={[
                             styles.listItem,
-                            isChecked ? styles.listItemChecked : styles.listItemUnchecked,
+                            isChecked && { borderColor: chapter.color },
                           ]}
                           activeOpacity={0.7}
                         >
                           <View
                             style={[
-                              styles.listNumber,
+                              styles.checkboxBox,
                               isChecked
-                                ? styles.listNumberChecked
-                                : { backgroundColor: chapter.color },
+                                ? { backgroundColor: chapter.color, borderColor: chapter.color }
+                                : { backgroundColor: '#FFFFFF', borderColor: '#94A3B8' },
                             ]}
                           >
-                            {isChecked ? (
-                              <Feather name="check" size={14} color="#FFFFFF" />
-                            ) : (
-                              <Text style={styles.listNumberText}>{li.number}</Text>
+                            {isChecked && (
+                              <Feather name="check" size={15} color="#FFFFFF" />
                             )}
                           </View>
                           <View style={styles.listTextContainer}>
-                            <Text
-                              style={[
-                                styles.listTitle,
-                                isChecked && styles.listTitleCheckedText,
-                              ]}
-                            >
-                              {li.title}
-                            </Text>
+                            <Text style={styles.listTitle}>{li.title}</Text>
                             <Text style={styles.listDesc}>{li.desc}</Text>
                           </View>
                         </TouchableOpacity>
@@ -470,14 +461,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
   },
-  listItemChecked: {
-    backgroundColor: '#F0FDF4',
-    borderColor: '#86EFAC',
-  },
-  listItemUnchecked: {
-    backgroundColor: '#F8FAFC',
-    borderColor: '#E2E8F0',
-  },
   listNumber: {
     width: 26,
     height: 26,
@@ -486,16 +469,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 10,
   },
-  listNumberChecked: {
-    backgroundColor: '#10B981',
+  checkboxBox: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+    marginTop: 2,
   },
   listNumberText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontFamily: FONTS.bold,
-  },
-  listTitleCheckedText: {
-    color: '#15803D',
   },
   listTextContainer: {
     flex: 1,
