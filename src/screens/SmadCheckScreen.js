@@ -273,78 +273,73 @@ export default function SmadCheckScreen({ navigation }) {
             </View>
           </View>
 
-          {/* List of 8 Food Groups (Clean Flat Rows) */}
+          {/* List of 8 Food Groups (Numbered Subheadings with Cards Below) */}
           <View style={styles.foodList}>
-            {FOOD_GROUPS.map((food) => {
+            {FOOD_GROUPS.map((food, index) => {
+              const alphabetIndex = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
               const isAsi = food.id === "breastmilk";
               const isSelected = isAsi
                 ? isBreastfeeding
                 : selectedFoodIds.includes(food.id);
 
               return (
-                <TouchableOpacity
-                  key={food.id}
-                  onPress={() => toggleFoodGroup(food.id)}
-                  style={[
-                    styles.foodRow,
-                    isSelected ? styles.foodRowActive : styles.foodRowInactive,
-                  ]}
-                  activeOpacity={0.7}
-                >
-                  <View
-                    style={[
-                      styles.checkCircle,
-                      isSelected && styles.checkCircleActive,
-                    ]}
-                  >
-                    {isSelected && (
-                      <Feather name="check" size={13} color="#FFFFFF" />
-                    )}
-                  </View>
-
-                  <View style={styles.foodContent}>
-                    <View style={styles.foodHeaderRow}>
-                      <Text
-                        style={[
-                          styles.foodGroupBadge,
-                          isSelected && { color: "#0369A1" },
-                        ]}
-                      >
-                        Kelompok {food.groupNumber}
-                      </Text>
-                      <View
-                        style={[
-                          styles.badgeTag,
-                          isSelected && { backgroundColor: "#DCFCE7" },
-                        ]}
-                      >
-                        <Text
-                          style={[
-                            styles.badgeTagText,
-                            isSelected && { color: "#15803D" },
-                          ]}
-                        >
-                          {isAsi && isBreastfeeding
-                            ? "Otomatis Terpenuhi"
-                            : food.badge}
-                        </Text>
-                      </View>
-                    </View>
-
+                <View key={food.id} style={styles.foodGroupBlock}>
+                  {/* Sub-header OUTSIDE the card */}
+                  <View style={styles.foodGroupHeader}>
                     <Text
                       style={[
-                        styles.foodTitle,
-                        isSelected && styles.foodTitleActive,
+                        styles.foodGroupHeaderTitle,
+                        isSelected && styles.foodGroupHeaderTitleActive,
                       ]}
                     >
-                      {food.title}
+                      {alphabetIndex[index] || index + 1}. Kelompok {food.groupNumber}
                     </Text>
-
-                    <Text style={styles.foodExamples} numberOfLines={1}>
-                      {food.examples.slice(0, 4).join(", ")}...
-                    </Text>
+                    <View style={styles.badgeTag}>
+                      <Text style={styles.badgeTagText}>
+                        {isAsi && isBreastfeeding
+                          ? "Otomatis Terpenuhi"
+                          : food.badge}
+                      </Text>
+                    </View>
                   </View>
-                </TouchableOpacity>
+
+                  {/* Selectable Card Below Subheader */}
+                  <TouchableOpacity
+                    onPress={() => toggleFoodGroup(food.id)}
+                    style={[
+                      styles.foodRow,
+                      isSelected ? styles.foodRowActive : styles.foodRowInactive,
+                    ]}
+                    activeOpacity={0.7}
+                  >
+                    <View
+                      style={[
+                        styles.checkCircle,
+                        isSelected && styles.checkCircleActive,
+                      ]}
+                    >
+                      {isSelected && (
+                        <Feather name="check" size={14} color="#FFFFFF" />
+                      )}
+                    </View>
+
+                    <View style={styles.foodContent}>
+                      <Text
+                        style={[
+                          styles.foodTitle,
+                          isSelected && styles.foodTitleActive,
+                        ]}
+                      >
+                        {food.title}
+                      </Text>
+
+                      <Text style={styles.foodExamples}>
+                        <Text style={styles.foodExamplesPrefix}>Contoh: </Text>
+                        {food.examples.join(", ")}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               );
             })}
           </View>
@@ -702,34 +697,65 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   foodList: {
-    marginTop: 4,
+    marginTop: 8,
+  },
+  foodGroupBlock: {
+    marginBottom: 14,
+  },
+  foodGroupHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 6,
+    paddingHorizontal: 2,
+  },
+  foodGroupHeaderTitle: {
+    fontSize: 13,
+    fontFamily: FONTS.semiBold,
+    color: "#475569",
+  },
+  foodGroupHeaderTitleActive: {
+    color: "#0284C7",
+    fontFamily: FONTS.bold,
+  },
+  badgeTag: {
+    backgroundColor: "#E0F2FE",
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 7,
+    borderWidth: 1,
+    borderColor: "#BAE6FD",
+  },
+  badgeTagText: {
+    fontSize: 10,
+    fontFamily: FONTS.semiBold,
+    color: "#0369A1",
   },
   foodRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 9,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    marginBottom: 6,
-    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 14,
+    borderWidth: 1.5,
   },
   foodRowInactive: {
     backgroundColor: "#F8FAFC",
-    borderColor: "#F1F5F9",
+    borderColor: "#E2E8F0",
   },
   foodRowActive: {
     backgroundColor: "#F0FDF4",
-    borderColor: "#BBF7D0",
+    borderColor: "#86EFAC",
   },
   checkCircle: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     borderWidth: 1.5,
     borderColor: "#94A3B8",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 10,
+    marginRight: 12,
     backgroundColor: "#FFFFFF",
   },
   checkCircleActive: {
@@ -739,32 +765,11 @@ const styles = StyleSheet.create({
   foodContent: {
     flex: 1,
   },
-  foodHeaderRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 1,
-  },
-  foodGroupBadge: {
-    fontSize: 10,
-    fontFamily: FONTS.semiBold,
-    color: "#64748B",
-  },
-  badgeTag: {
-    backgroundColor: "#E2E8F0",
-    paddingHorizontal: 6,
-    paddingVertical: 1,
-    borderRadius: 4,
-  },
-  badgeTagText: {
-    fontSize: 9,
-    fontFamily: FONTS.medium,
-    color: "#475569",
-  },
   foodTitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontFamily: FONTS.semiBold,
     color: "#334155",
+    marginBottom: 2,
   },
   foodTitleActive: {
     color: "#15803D",
@@ -773,7 +778,11 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontFamily: FONTS.regular,
     color: "#64748B",
-    marginTop: 1,
+    lineHeight: 16,
+  },
+  foodExamplesPrefix: {
+    fontFamily: FONTS.medium,
+    color: "#475569",
   },
   evaluateBtn: {
     backgroundColor: "#0284C7",

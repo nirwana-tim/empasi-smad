@@ -217,7 +217,7 @@ export default function InformationScreen({ navigation }) {
             </Text>
 
             <Text style={styles.completionDesc}>
-              Hebat Bunda! Seluruh panduan MP-ASI dan pencegahan stunting telah selesai dipelajari. Kuesioner <Text style={styles.boldText}>Post-Test</Text> sekarang sudah <Text style={{ color: '#15803D', fontWeight: '800' }}>TERBUKA</Text> untuk diisi.
+              Hebat Bunda! Seluruh panduan MP-ASI dan pencegahan stunting telah selesai dipelajari. Kuesioner <Text style={styles.boldText}>Post-Test</Text> sekarang sudah <Text style={{ color: '#15803D', fontFamily: FONTS.bold }}>TERBUKA</Text> untuk diisi.
             </Text>
 
             <View style={styles.summaryPointsBox}>
@@ -320,12 +320,12 @@ const styles = StyleSheet.create({
   },
   tabPillText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: FONTS.medium,
     color: '#334155',
   },
   tabPillTextActive: {
     color: '#FFFFFF',
-    fontWeight: '900',
+    fontFamily: FONTS.semiBold,
   },
   mainCard: {
     marginTop: 6,
@@ -356,20 +356,20 @@ const styles = StyleSheet.create({
   },
   chapterBadgeText: {
     color: '#FFFFFF',
-    fontWeight: '900',
+    fontFamily: FONTS.bold,
     fontSize: 14,
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
   chapterCounterText: {
     fontSize: 11,
-    fontWeight: '700',
+    fontFamily: FONTS.medium,
     color: '#64748B',
   },
   chapterSummary: {
     fontSize: 13,
-    color: '#334155',
+    color: '#475569',
     lineHeight: 20,
-    fontWeight: '600',
+    fontFamily: FONTS.regular,
     marginTop: 4,
   },
   divider: {
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     fontSize: 15,
-    fontWeight: '900',
+    fontFamily: FONTS.bold,
     color: '#334155',
     flex: 1,
   },
@@ -405,15 +405,16 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   highlightText: {
-    fontSize: 14,
-    fontWeight: '800',
+    fontSize: 13,
+    fontFamily: FONTS.semiBold,
     color: '#334155',
-    lineHeight: 21,
+    lineHeight: 20,
   },
   sectionContent: {
     fontSize: 14,
+    fontFamily: FONTS.regular,
     color: '#334155',
-    lineHeight: 23,
+    lineHeight: 22,
   },
   listContainer: {
     marginTop: 8,
@@ -438,18 +439,19 @@ const styles = StyleSheet.create({
   listNumberText: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: '900',
+    fontFamily: FONTS.bold,
   },
   listTextContainer: {
     flex: 1,
   },
   listTitle: {
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#334155',
   },
   listDesc: {
     fontSize: 12,
+    fontFamily: FONTS.regular,
     color: '#475569',
     marginTop: 2,
     lineHeight: 18,
@@ -542,10 +544,10 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 6,
   },
-  groupBadgeText: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#0369A1',
+  foodGroupNumberText: {
+    fontSize: 11,
+    fontFamily: FONTS.bold,
+    color: '#0284C7',
   },
   foodCategory: {
     fontSize: 10,
@@ -554,11 +556,12 @@ const styles = StyleSheet.create({
   },
   foodTitle: {
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#334155',
   },
   foodExamples: {
     fontSize: 12,
+    fontFamily: FONTS.regular,
     color: '#475569',
     marginTop: 2,
   },
@@ -580,20 +583,21 @@ const styles = StyleSheet.create({
   },
   completionTitle: {
     fontSize: 17,
-    fontWeight: '900',
+    fontFamily: FONTS.bold,
     color: '#334155',
     textAlign: 'center',
     marginBottom: 8,
   },
   completionDesc: {
     fontSize: 13,
-    color: '#334155',
+    fontFamily: FONTS.regular,
+    color: '#475569',
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 16,
   },
   boldText: {
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#334155',
   },
   summaryPointsBox: {
@@ -607,7 +611,7 @@ const styles = StyleSheet.create({
   },
   summaryPointsHeader: {
     fontSize: 12,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#334155',
     marginBottom: 8,
   },
@@ -619,7 +623,7 @@ const styles = StyleSheet.create({
   pointText: {
     fontSize: 12,
     color: '#334155',
-    fontWeight: '600',
+    fontFamily: FONTS.medium,
   },
   posttestCtaBtn: {
     flexDirection: 'row',
@@ -635,7 +639,7 @@ const styles = StyleSheet.create({
   posttestCtaBtnText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: FONTS.bold,
   },
   reReadBtn: {
     flexDirection: 'row',
@@ -647,7 +651,7 @@ const styles = StyleSheet.create({
   reReadBtnText: {
     fontSize: 12,
     color: '#64748B',
-    fontWeight: '700',
+    fontFamily: FONTS.semiBold,
   },
   navButtonsRow: {
     flexDirection: 'row',
@@ -673,7 +677,7 @@ const styles = StyleSheet.create({
   },
   navBtnText: {
     color: '#FFFFFF',
-    fontWeight: '800',
+    fontFamily: FONTS.bold,
     fontSize: 13,
     marginHorizontal: 4,
   },

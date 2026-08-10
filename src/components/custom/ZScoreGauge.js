@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { COLORS } from '../../constants/theme';
+import { COLORS, FONTS } from '../../constants/theme';
 
 export default function ZScoreGauge({ zScore = 0, statusColor = '#27AE60' }) {
   // Rentang tampilan Z-score: -4 SD sampai +4 SD
@@ -19,42 +19,50 @@ export default function ZScoreGauge({ zScore = 0, statusColor = '#27AE60' }) {
       <View style={styles.pointerTrack}>
         <View style={[styles.pointerWrapper, { left: `${bubblePercentage}%` }]}>
           <View style={[styles.pointerBadge, { backgroundColor: statusColor }]}>
-            <Text style={styles.pointerText}>{zScore > 0 ? `+${zScore}` : zScore} SD</Text>
+            <Text style={styles.pointerText}>
+              {zScore > 0 ? `+${zScore}` : zScore} SD
+            </Text>
           </View>
           <View style={[styles.pointerArrow, { borderTopColor: statusColor }]} />
         </View>
       </View>
 
-      {/* Multi-segmented Spectrum Bar */}
+      {/* Segmented Color Spectrum Bar */}
       <View style={styles.bar}>
-        <View style={[styles.segment, { flex: 1.25, backgroundColor: '#EF4444' }]} />
-        <View style={[styles.segment, { flex: 1.25, backgroundColor: '#F59E0B' }]} />
-        <View style={[styles.segment, { flex: 6.25, backgroundColor: '#10B981' }]} />
-        <View style={[styles.segment, { flex: 1.25, backgroundColor: '#3B82F6' }]} />
+        {/* Sangat Pendek (Severely Stunted) < -3 SD */}
+        <View style={[styles.segment, { backgroundColor: '#DC2626', flex: 1 }]} />
+        {/* Pendek (Stunted) -3 SD to -2 SD */}
+        <View style={[styles.segment, { backgroundColor: '#F59E0B', flex: 1 }]} />
+        {/* Normal -2 SD to +3 SD */}
+        <View style={[styles.segment, { backgroundColor: '#10B981', flex: 5 }]} />
+        {/* Tinggi > +3 SD */}
+        <View style={[styles.segment, { backgroundColor: '#3B82F6', flex: 1 }]} />
       </View>
 
-      {/* Axis Scale Markers */}
+      {/* Scale Labels */}
       <View style={styles.scaleRow}>
-        <Text style={styles.scaleText}>-3 SD</Text>
-        <Text style={styles.scaleText}>-2 SD</Text>
+        <Text style={styles.scaleText}>-4 SD</Text>
+        <Text style={styles.scaleText}>-3</Text>
+        <Text style={styles.scaleText}>-2</Text>
         <Text style={[styles.scaleText, styles.scaleTextMedian]}>0 (Median)</Text>
-        <Text style={styles.scaleText}>+2 SD</Text>
-        <Text style={styles.scaleText}>+3 SD</Text>
+        <Text style={styles.scaleText}>+2</Text>
+        <Text style={styles.scaleText}>+3</Text>
+        <Text style={styles.scaleText}>+4 SD</Text>
       </View>
 
-      {/* Legend Labels */}
+      {/* Legend Checklist */}
       <View style={styles.legendRow}>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#EF4444' }]} />
-          <Text style={styles.legendText}>Sangat Pendek</Text>
+          <View style={[styles.legendDot, { backgroundColor: '#DC2626' }]} />
+          <Text style={styles.legendText}>Sgt Pendek (&lt;-3)</Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, { backgroundColor: '#F59E0B' }]} />
-          <Text style={styles.legendText}>Pendek</Text>
+          <Text style={styles.legendText}>Pendek (-3 s/d -2)</Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, { backgroundColor: '#10B981' }]} />
-          <Text style={styles.legendText}>Normal</Text>
+          <Text style={styles.legendText}>Normal (-2 s/d +3)</Text>
         </View>
         <View style={styles.legendItem}>
           <View style={[styles.legendDot, { backgroundColor: '#3B82F6' }]} />
@@ -77,7 +85,7 @@ const styles = StyleSheet.create({
   },
   headerLabel: {
     fontSize: 12,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: COLORS.textTitle,
     marginBottom: 16,
   },
@@ -99,14 +107,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.22,
+    shadowOpacity: 0.15,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 2,
   },
   pointerText: {
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '900',
+    fontFamily: FONTS.bold,
   },
   pointerArrow: {
     width: 0,
@@ -119,10 +127,9 @@ const styles = StyleSheet.create({
   },
   bar: {
     flexDirection: 'row',
-    height: 12,
-    borderRadius: 6,
+    height: 14,
+    borderRadius: 7,
     overflow: 'hidden',
-    width: '100%',
   },
   segment: {
     height: '100%',
@@ -136,10 +143,10 @@ const styles = StyleSheet.create({
   scaleText: {
     fontSize: 10,
     color: COLORS.textMuted,
-    fontWeight: '600',
+    fontFamily: FONTS.medium,
   },
   scaleTextMedian: {
-    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.textTitle,
   },
   legendRow: {
@@ -164,8 +171,8 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   legendText: {
-    fontSize: 10,
-    color: COLORS.textBody,
-    fontWeight: '700',
+    fontSize: 9,
+    fontFamily: FONTS.medium,
+    color: COLORS.textMuted,
   },
 });

@@ -7,7 +7,7 @@ import {
   Animated,
   Image,
 } from 'react-native';
-import { COLORS, SHADOWS } from '../../constants/theme';
+import { COLORS, FONTS, SHADOWS } from '../../constants/theme';
 import WashiTape from './WashiTape';
 
 export default function StickyCard({
@@ -134,16 +134,17 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '900',
+    fontFamily: FONTS.bold,
     color: COLORS.textTitle,
     textAlign: 'center',
-    letterSpacing: 0.5,
+    letterSpacing: 0.2,
     marginTop: 4,
   },
   subtitle: {
     fontSize: 13,
     color: COLORS.textBody,
     textAlign: 'center',
+    fontFamily: FONTS.regular,
     marginTop: 2,
     lineHeight: 18,
   },

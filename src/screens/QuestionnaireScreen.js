@@ -312,7 +312,7 @@ export default function QuestionnaireScreen({ navigation }) {
             <Text style={styles.stepNumber}>3</Text>
           </View>
           <Text style={styles.guideStepText}>
-            Form <Text style={styles.boldText}>Post-Test</Text> otomatis <Text style={{ color: '#15803D', fontWeight: '800' }}>terbuka (Unlocked)</Text> setelah langkah 1 & 2 selesai.
+            Form <Text style={styles.boldText}>Post-Test</Text> otomatis <Text style={{ color: '#15803D', fontFamily: FONTS.bold }}>terbuka (Unlocked)</Text> setelah langkah 1 & 2 selesai.
           </Text>
         </View>
 
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   },
   lockedNoticeTitle: {
     fontSize: 12,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#92400E',
     marginBottom: 4,
   },
@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#78350F',
     lineHeight: 18,
-    fontWeight: '600',
+    fontFamily: FONTS.medium,
   },
   shortcutBtn: {
     flexDirection: 'row',
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
   shortcutBtnText: {
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: FONTS.bold,
   },
   openBtn: {
     backgroundColor: '#0284C7',
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   openBtnText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: FONTS.bold,
     letterSpacing: 0.2,
   },
   guidelineBox: {
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
   },
   guidelineTitle: {
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#334155',
     marginBottom: 10,
   },
@@ -508,16 +508,17 @@ const styles = StyleSheet.create({
   stepNumber: {
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '800',
+    fontFamily: FONTS.bold,
   },
   guideStepText: {
     fontSize: 12,
-    color: '#334155',
+    color: '#475569',
+    fontFamily: FONTS.regular,
     lineHeight: 18,
     flex: 1,
   },
   boldText: {
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#334155',
   },
   resetProgressBtn: {
@@ -532,6 +533,6 @@ const styles = StyleSheet.create({
   resetProgressText: {
     fontSize: 11,
     color: '#64748B',
-    fontWeight: '600',
+    fontFamily: FONTS.medium,
   },
 });

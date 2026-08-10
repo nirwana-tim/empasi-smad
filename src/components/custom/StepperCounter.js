@@ -6,16 +6,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { COLORS } from '../../constants/theme';
+import { COLORS, FONTS } from '../../constants/theme';
 
 export default function StepperCounter({
   value = 0,
-  onChange,
   min = 0,
-  max = 10,
+  max = 20,
+  onChange,
   label,
   unit = 'kali',
   color = COLORS.primary,
+  borderColor = '#CBD5E1',
+  textColor = '#0284C7',
 }) {
   const handleDecrement = () => {
     if (value > min) {
@@ -32,6 +34,8 @@ export default function StepperCounter({
   return (
     <View style={styles.wrapper}>
       {label && <Text style={styles.label}>{label}</Text>}
+
+      {/* Symmetrical Full-Width Stepper Row */}
       <View style={styles.counterRow}>
         <TouchableOpacity
           onPress={handleDecrement}
@@ -43,11 +47,13 @@ export default function StepperCounter({
           ]}
           activeOpacity={0.7}
         >
-          <Feather name="minus" size={20} color="#FFFFFF" />
+          <Feather name="minus" size={22} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <View style={[styles.valueBox, { borderColor: color }]}>
-          <Text style={[styles.valueText, { color }]}>{value}</Text>
+        <View style={[styles.valueBox, { borderColor }]}>
+          <Text style={[styles.valueText, { color: textColor }]}>
+            {value}
+          </Text>
           {unit && <Text style={styles.unitText}>{unit}</Text>}
         </View>
 
@@ -61,7 +67,7 @@ export default function StepperCounter({
           ]}
           activeOpacity={0.7}
         >
-          <Feather name="plus" size={20} color="#FFFFFF" />
+          <Feather name="plus" size={22} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
     </View>
@@ -70,52 +76,57 @@ export default function StepperCounter({
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginVertical: 6,
+    marginVertical: 4,
+    width: '100%',
   },
   label: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 13,
+    fontFamily: FONTS.semiBold,
     color: COLORS.textTitle,
     marginBottom: 8,
   },
   counterRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginVertical: 4,
   },
   btn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 2,
   },
   btnDisabled: {
     backgroundColor: '#CBD5E1',
     elevation: 0,
   },
   valueBox: {
-    minWidth: 80,
-    height: 44,
-    borderWidth: 2,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
+    flex: 1,
+    height: 48,
+    borderWidth: 1.5,
+    borderRadius: 14,
+    backgroundColor: '#F8FAFC',
     marginHorizontal: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 12,
+    flexDirection: 'row',
   },
   valueText: {
-    fontSize: 18,
-    fontWeight: '900',
+    fontSize: 22,
+    fontFamily: FONTS.bold,
+    marginRight: 6,
   },
   unitText: {
-    fontSize: 10,
+    fontSize: 13,
+    fontFamily: FONTS.medium,
     color: COLORS.textMuted,
-    marginTop: -2,
   },
 });
