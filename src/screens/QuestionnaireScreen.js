@@ -109,26 +109,6 @@ export default function QuestionnaireScreen({ navigation }) {
     await openExternalUrl(posttest.url);
   };
 
-  // Handler Reset Progress
-  const handleResetProgress = () => {
-    Alert.alert(
-      'Reset Alur Pengujian',
-      'Apakah Anda ingin mengunci kembali form Post-Test dan mengulang alur pengujian dari awal?',
-      [
-        {
-          text: 'Reset Sekarang',
-          style: 'destructive',
-          onPress: async () => {
-            const initial = await StorageService.resetQuestionnaireProgress();
-            setProgress(initial);
-            Alert.alert('Berhasil', 'Alur kuesioner telah di-reset ke awal.');
-          },
-        },
-        { text: 'Batal', style: 'cancel' },
-      ]
-    );
-  };
-
   const pretest = QUESTIONNAIRE_LINKS.pretest;
   const posttest = QUESTIONNAIRE_LINKS.posttest;
 
@@ -329,16 +309,6 @@ export default function QuestionnaireScreen({ navigation }) {
             Form <Text style={styles.boldText}>Post-Test</Text> otomatis <Text style={{ color: '#15803D', fontFamily: FONTS.bold }}>terbuka (Unlocked)</Text> setelah langkah 1 & 2 selesai.
           </Text>
         </View>
-
-        {/* Reset Button for Testing/Researchers */}
-        <TouchableOpacity
-          onPress={handleResetProgress}
-          style={styles.resetProgressBtn}
-          activeOpacity={0.7}
-        >
-          <Feather name="refresh-cw" size={13} color="#64748B" style={{ marginRight: 6 }} />
-          <Text style={styles.resetProgressText}>Reset Status Kuisioner (Untuk Kebutuhan Pengujian)</Text>
-        </TouchableOpacity>
       </View>
 
       <View style={{ height: 30 }} />
@@ -534,19 +504,5 @@ const styles = StyleSheet.create({
   boldText: {
     fontFamily: FONTS.semiBold,
     color: '#334155',
-  },
-  resetProgressBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    marginTop: 6,
-    borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
-  },
-  resetProgressText: {
-    fontSize: 11,
-    color: '#64748B',
-    fontFamily: FONTS.medium,
   },
 });
