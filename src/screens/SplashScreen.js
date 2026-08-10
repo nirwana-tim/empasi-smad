@@ -41,14 +41,12 @@ export default function SplashScreen({ navigation }) {
         activeOpacity={1}
         onPress={handleSkip}
       >
-        {/* Full Image Container - Perfectly fitted 100% without zoom/cropping */}
-        <View style={styles.imageWrapper}>
-          <Image
-            source={require('../../Asset/LoadingScreen.png')}
-            style={styles.splashImage}
-            resizeMode="contain"
-          />
-        </View>
+        {/* Full Edge-to-Edge Image Container */}
+        <Image
+          source={require('../../Asset/LoadingScreen.png')}
+          style={styles.splashImage}
+          resizeMode="cover"
+        />
 
         {/* Floating Loading Indicator */}
         <Animated.View style={[styles.loadingBadge, { opacity: fadeAnim }]}>
@@ -63,7 +61,7 @@ export default function SplashScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#EDF9FE',
+    backgroundColor: '#00A499',
   },
   touchArea: {
     flex: 1,
@@ -73,20 +71,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
-  imageWrapper: {
-    width: '100%',
-    height: '100%',
-    maxWidth: 480,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   splashImage: {
     width: '100%',
     height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   loadingBadge: {
     position: 'absolute',
-    bottom: 24,
+    bottom: 36,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
