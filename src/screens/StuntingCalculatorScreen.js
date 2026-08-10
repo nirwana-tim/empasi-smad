@@ -327,8 +327,8 @@ export default function StuntingCalculatorScreen({ navigation }) {
           ]}
           activeOpacity={0.85}
         >
-          <Feather name="activity" size={20} color="#FFFFFF" style={{ marginRight: 10 }} />
-          <Text style={styles.ctaButtonText}>Hitung Status Stunting Sekarang</Text>
+          <Feather name="activity" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
+          <Text style={styles.ctaButtonText}>Hitung Status Stunting</Text>
         </TouchableOpacity>
       </StickyCard>
 
@@ -653,16 +653,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
-    borderRadius: 16,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
+    borderRadius: 14,
     marginTop: 10,
+    width: '100%',
     ...SHADOWS.button,
   },
   ctaButtonText: {
     color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '900',
-    letterSpacing: 0.3,
+    fontSize: 14,
+    fontWeight: '800',
+    letterSpacing: 0.2,
   },
   resultSection: {
     marginTop: 14,

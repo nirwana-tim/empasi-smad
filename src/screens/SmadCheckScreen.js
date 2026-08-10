@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -23,7 +23,7 @@ export default function SmadCheckScreen({ navigation }) {
   // Form States
   const [ageGroup, setAgeGroup] = useState('6-8'); // '6-8' atau '9-23'
   const [isBreastfeeding, setIsBreastfeeding] = useState(true);
-  const [selectedFoodIds, setSelectedFoodIds] = useState([]);
+  const [selectedFoodIds, setSelectedFoodIds] = useState(['grains_roots', 'flesh_foods', 'eggs', 'fruits_veg_vita']);
   const [mealFrequency, setMealFrequency] = useState(2);
   const [milkFrequency, setMilkFrequency] = useState(0);
 
@@ -57,7 +57,7 @@ export default function SmadCheckScreen({ navigation }) {
 
     setResult(evalResult);
 
-    // Auto-scroll ke hasil evaluasi
+    // Auto-scroll ke hasil evaluasi agar langsung terlihat
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
     }, 150);
@@ -78,6 +78,20 @@ export default function SmadCheckScreen({ navigation }) {
     }
   };
 
+  // Real-time update jika hasil sudah terbuka
+  useEffect(() => {
+    if (result) {
+      const evalResult = evaluateSMAD({
+        ageGroup,
+        isBreastfeeding,
+        selectedFoodIds,
+        mealFrequency,
+        milkFrequency,
+      });
+      setResult(evalResult);
+    }
+  }, [ageGroup, isBreastfeeding, selectedFoodIds, mealFrequency, milkFrequency]);
+
   const handleReset = () => {
     setAgeGroup('6-8');
     setIsBreastfeeding(true);
@@ -85,7 +99,10 @@ export default function SmadCheckScreen({ navigation }) {
     setMealFrequency(2);
     setMilkFrequency(0);
     setResult(null);
+    scrollRef.current?.scrollTo({ y: 0, animated: true });
   };
+
+  const targetMmf = isBreastfeeding ? (ageGroup === '6-8' ? 2 : 3) : 4;
 
   return (
     <ScreenContainer ref={scrollRef} backgroundImage={require('../../Asset/defaultbg.png')}>
@@ -98,271 +115,298 @@ export default function SmadCheckScreen({ navigation }) {
 
       {/* Intro Note */}
       <View style={styles.introCard}>
-        <Feather name="info" size={18} color={COLORS.primaryDark} style={styles.infoIcon} />
+        <View style={styles.infoIconWrapper}>
+          <Feather name="info" size={18} color="#0284C7" />
+        </View>
         <Text style={styles.introText}>
           Yuk periksa apakah makanan si kecil dalam <Text style={styles.boldText}>24 jam terakhir</Text> sudah memenuhi standar <Text style={styles.boldText}>Minimum Acceptable Diet (MAD)</Text> WHO!
         </Text>
       </View>
 
-      {/* QUESTION 1: USIA ANAK */}
-      <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
-        <Text style={styles.questionTitle}>1. Usia Anak Saat Ini:</Text>
-        <View style={styles.toggleRow}>
-          <TouchableOpacity
-            onPress={() => setAgeGroup('6-8')}
-            style={[
-              styles.toggleBtn,
-              ageGroup === '6-8' && styles.toggleBtnActive,
-            ]}
-            activeOpacity={0.8}
-          >
-            <Text style={[styles.toggleBtnText, ageGroup === '6-8' && styles.toggleBtnTextActive]}>
-              6 – 8 Bulan
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setAgeGroup('9-23')}
-            style={[
-              styles.toggleBtn,
-              ageGroup === '9-23' && styles.toggleBtnActive,
-            ]}
-            activeOpacity={0.8}
-          >
-            <Text style={[styles.toggleBtnText, ageGroup === '9-23' && styles.toggleBtnTextActive]}>
-              9 – 23 Bulan
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </StickyCard>
-
-      {/* QUESTION 2: STATUS MENYUSU */}
-      <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
-        <Text style={styles.questionTitle}>2. Apakah Anak Masih Menyusu ASI?</Text>
-        <View style={styles.toggleRow}>
-          <TouchableOpacity
-            onPress={() => setIsBreastfeeding(true)}
-            style={[
-              styles.toggleBtn,
-              isBreastfeeding && styles.toggleBtnActive,
-            ]}
-            activeOpacity={0.8}
-          >
-            <Text style={[styles.toggleBtnText, isBreastfeeding && styles.toggleBtnTextActive]}>
-              Ya, Masih Menyusu ASI
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => setIsBreastfeeding(false)}
-            style={[
-              styles.toggleBtn,
-              !isBreastfeeding && styles.toggleBtnActiveDanger,
-            ]}
-            activeOpacity={0.8}
-          >
-            <Text style={[styles.toggleBtnText, !isBreastfeeding && styles.toggleBtnTextActive]}>
-              Tidak Menyusu ASI
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </StickyCard>
-
-      {/* QUESTION 3: 8 FOOD GROUPS CHECKLIST */}
-      <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
-        <View style={styles.questionHeaderRow}>
-          <Text style={styles.questionTitle}>3. Makanan yang Dikonsumsi (24 Jam Terakhir):</Text>
-        </View>
-        <Text style={styles.questionSubtitle}>
-          Centang semua kelompok makanan yang dimakan si kecil kemarin:
-        </Text>
-
-        {/* Real-time Progress Bar */}
-        <View style={styles.progressCard}>
-          <View style={styles.progressHeader}>
-            <Text style={styles.progressLabel}>Capaian Keragaman (MDD):</Text>
-            <Text style={[styles.progressScore, { color: totalFoodCount >= 5 ? COLORS.success : COLORS.warning }]}>
-              {totalFoodCount} dari 8 Kelompok {totalFoodCount >= 5 ? ' (Target Tercapai! 🎉)' : ' (Min. 5 kelompok)'}
-            </Text>
-          </View>
-          <View style={styles.progressBarTrack}>
-            <View
+      {/* UNIFIED SINGLE FORM CARD */}
+      <StickyCard
+        backgroundColor="#FFFFFF"
+        showLines={false}
+        hasTapes={true}
+        tapeColor={COLORS.washiTape}
+        tapePositions={['top-left', 'top-right']}
+        style={styles.formCard}
+      >
+        {/* PERTANYAAN 1: USIA ANAK */}
+        <View style={styles.questionSection}>
+          <Text style={styles.questionTitle}>1. Usia Anak Saat Ini:</Text>
+          <View style={styles.toggleRow}>
+            <TouchableOpacity
+              onPress={() => setAgeGroup('6-8')}
               style={[
-                styles.progressBarFill,
-                {
-                  width: `${(totalFoodCount / 8) * 100}%`,
-                  backgroundColor: totalFoodCount >= 5 ? COLORS.success : COLORS.warning,
-                },
+                styles.toggleBtn,
+                ageGroup === '6-8' ? styles.toggleBtnActive : styles.toggleBtnInactive,
               ]}
-            />
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.toggleBtnText, ageGroup === '6-8' && styles.toggleBtnTextActive]}>
+                6 – 8 Bulan
+              </Text>
+              <Text style={[styles.toggleBtnSub, ageGroup === '6-8' && styles.toggleBtnSubActive]}>
+                MP-ASI Awal
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setAgeGroup('9-23')}
+              style={[
+                styles.toggleBtn,
+                ageGroup === '9-23' ? styles.toggleBtnActive : styles.toggleBtnInactive,
+              ]}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.toggleBtnText, ageGroup === '9-23' && styles.toggleBtnTextActive]}>
+                9 – 23 Bulan
+              </Text>
+              <Text style={[styles.toggleBtnSub, ageGroup === '9-23' && styles.toggleBtnSubActive]}>
+                MP-ASI Lanjutan
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.foodList}>
-          {FOOD_GROUPS.map((food) => {
-            const isSelected = food.id === 'breastmilk' ? isBreastfeeding : selectedFoodIds.includes(food.id);
-            return (
-              <TouchableOpacity
-                key={food.id}
-                onPress={() => toggleFoodGroup(food.id)}
-                style={[
-                  styles.foodCheckboxItem,
-                  isSelected && styles.foodCheckboxItemActive,
-                ]}
-                activeOpacity={0.7}
-              >
-                <View style={[styles.checkCircle, isSelected && styles.checkCircleActive]}>
-                  {isSelected && <Feather name="check" size={14} color="#FFFFFF" />}
-                </View>
+        {/* PERTANYAAN 2: STATUS MENYUSU */}
+        <View style={styles.questionSection}>
+          <Text style={styles.questionTitle}>2. Apakah Anak Masih Menyusu ASI?</Text>
+          <View style={styles.toggleRow}>
+            <TouchableOpacity
+              onPress={() => setIsBreastfeeding(true)}
+              style={[
+                styles.toggleBtn,
+                isBreastfeeding ? styles.toggleBtnActive : styles.toggleBtnInactive,
+              ]}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.toggleBtnText, isBreastfeeding && styles.toggleBtnTextActive]}>
+                Ya, Masih ASI 🤱
+              </Text>
+              <Text style={[styles.toggleBtnSub, isBreastfeeding && styles.toggleBtnSubActive]}>
+                Otomatis +1 Kelompok
+              </Text>
+            </TouchableOpacity>
 
-                <View style={styles.foodInfo}>
-                  <View style={styles.foodHeaderRow}>
-                    <Text style={styles.foodGroupNumber}>Kelompok {food.groupNumber}</Text>
-                    <View style={styles.badgeWrapper}>
-                      <Text style={styles.foodBadge}>{food.badge}</Text>
-                    </View>
-                  </View>
-                  <Text style={[styles.foodName, isSelected && styles.foodNameActive]}>
-                    {food.title}
-                  </Text>
-                  <Text style={styles.foodExamplesSmall}>
-                    {food.examples.slice(0, 4).join(', ')}...
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+            <TouchableOpacity
+              onPress={() => setIsBreastfeeding(false)}
+              style={[
+                styles.toggleBtn,
+                !isBreastfeeding ? styles.toggleBtnDangerActive : styles.toggleBtnInactive,
+              ]}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.toggleBtnText, !isBreastfeeding && styles.toggleBtnTextActive]}>
+                Tidak Menyusu 🍼
+              </Text>
+              <Text style={[styles.toggleBtnSub, !isBreastfeeding && styles.toggleBtnSubActive]}>
+                Wajib Susu Min. 2x
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </StickyCard>
 
-      {/* QUESTION 4: MEAL FREQUENCY */}
-      <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
-        <Text style={styles.questionTitle}>4. Frekuensi Makan Makanan Padat / Lunak:</Text>
-        <Text style={styles.questionSubtitle}>
-          Berapa kali si kecil makan makanan utama (padat/lumat/cincang) kemarin?
-        </Text>
-        <StepperCounter
-          value={mealFrequency}
-          onChange={setMealFrequency}
-          min={0}
-          max={8}
-          unit="kali makan"
-          color={COLORS.primary}
-        />
-      </StickyCard>
-
-      {/* QUESTION 5: MILK FREQUENCY (FOR NON-BF) */}
-      {!isBreastfeeding && (
-        <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
-          <Text style={styles.questionTitle}>5. Frekuensi Konsumsi Susu / Olahan Susu:</Text>
+        {/* PERTANYAAN 3: 8 KELOMPOK MAKANAN */}
+        <View style={styles.questionSection}>
+          <View style={styles.sectionHeaderRow}>
+            <Text style={styles.questionTitle}>3. Makanan yang Dikonsumsi (24 Jam Terakhir):</Text>
+          </View>
           <Text style={styles.questionSubtitle}>
-            Karena tidak menyusu ASI: berapa kali si kecil mendapat susu formula atau olahan susu? (Target: min. 2 kali)
+            Centang semua kelompok makanan yang dimakan si kecil kemarin:
+          </Text>
+
+          {/* Real-time Progress Bar */}
+          <View style={styles.progressCard}>
+            <View style={styles.progressHeader}>
+              <Text style={styles.progressLabel}>Capaian Keragaman (MDD):</Text>
+              <Text style={[styles.progressScore, { color: totalFoodCount >= 5 ? '#16A34A' : '#D97706' }]}>
+                {totalFoodCount} dari 8 Kelompok {totalFoodCount >= 5 ? ' (Target Tercapai! 🎉)' : ' (Min. 5 kelompok)'}
+              </Text>
+            </View>
+            <View style={styles.progressBarTrack}>
+              <View
+                style={[
+                  styles.progressBarFill,
+                  {
+                    width: `${Math.min(100, (totalFoodCount / 8) * 100)}%`,
+                    backgroundColor: totalFoodCount >= 5 ? '#10B981' : '#F59E0B',
+                  },
+                ]}
+              />
+            </View>
+          </View>
+
+          {/* List of 8 Food Groups */}
+          <View style={styles.foodList}>
+            {FOOD_GROUPS.map((food) => {
+              const isAsi = food.id === 'breastmilk';
+              const isSelected = isAsi ? isBreastfeeding : selectedFoodIds.includes(food.id);
+
+              return (
+                <TouchableOpacity
+                  key={food.id}
+                  onPress={() => toggleFoodGroup(food.id)}
+                  style={[
+                    styles.foodItemCard,
+                    isSelected ? styles.foodItemActive : styles.foodItemInactive,
+                  ]}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.checkCircle, isSelected && styles.checkCircleActive]}>
+                    {isSelected && <Feather name="check" size={14} color="#FFFFFF" />}
+                  </View>
+
+                  <View style={styles.foodContent}>
+                    <View style={styles.foodHeaderRow}>
+                      <Text style={[styles.foodGroupBadge, isSelected && { color: '#0369A1' }]}>
+                        Kelompok {food.groupNumber}
+                      </Text>
+                      <View style={[styles.badgeTag, isSelected && { backgroundColor: '#DCFCE7' }]}>
+                        <Text style={[styles.badgeTagText, isSelected && { color: '#15803D' }]}>
+                          {isAsi && isBreastfeeding ? 'Otomatis Terpenuhi' : food.badge}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <Text style={[styles.foodTitle, isSelected && styles.foodTitleActive]}>
+                      {food.title}
+                    </Text>
+
+                    <Text style={styles.foodExamples} numberOfLines={1}>
+                      {food.examples.slice(0, 4).join(', ')}...
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* PERTANYAAN 4: FREKUENSI MAKAN UTAMA */}
+        <View style={styles.questionSection}>
+          <View style={styles.sectionHeaderRow}>
+            <Text style={styles.questionTitle}>4. Frekuensi Makan Makanan Padat/Lunak:</Text>
+            <View style={styles.targetBadge}>
+              <Text style={styles.targetBadgeText}>Target: min. {targetMmf}x</Text>
+            </View>
+          </View>
+          <Text style={styles.questionSubtitle}>
+            Berapa kali si kecil makan makanan utama (lumat/lembik/keluarga) kemarin?
           </Text>
           <StepperCounter
-            value={milkFrequency}
-            onChange={setMilkFrequency}
+            value={mealFrequency}
+            onChange={setMealFrequency}
             min={0}
             max={8}
-            unit="kali minum"
-            color="#E67E22"
+            unit="kali makan"
+            color="#0284C7"
           />
-        </StickyCard>
-      )}
+        </View>
 
-      {/* BUTTON EVALUATE */}
-      <TouchableOpacity
-        onPress={handleEvaluate}
-        style={styles.evaluateButton}
-        activeOpacity={0.8}
-      >
-        <Feather name="check-circle" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
-        <Text style={styles.evaluateButtonText}>Evaluasi Gizi (Cek MAD Sekarang)</Text>
-      </TouchableOpacity>
+        {/* PERTANYAAN 5: FREKUENSI SUSU (JIKA NON-ASI) */}
+        {!isBreastfeeding && (
+          <View style={styles.questionSection}>
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.questionTitle}>5. Frekuensi Konsumsi Susu / Olahan Susu:</Text>
+              <View style={[styles.targetBadge, { backgroundColor: '#FEF3C7' }]}>
+                <Text style={[styles.targetBadgeText, { color: '#B45309' }]}>Target: min. 2x</Text>
+              </View>
+            </View>
+            <Text style={styles.questionSubtitle}>
+              Karena tidak menyusu ASI: berapa kali si kecil mendapat susu formula/olahan susu kemarin?
+            </Text>
+            <StepperCounter
+              value={milkFrequency}
+              onChange={setMilkFrequency}
+              min={0}
+              max={8}
+              unit="kali minum"
+              color="#D97706"
+            />
+          </View>
+        )}
+
+        {/* CTA EVALUATE BUTTON */}
+        <TouchableOpacity
+          onPress={handleEvaluate}
+          style={styles.evaluateBtn}
+          activeOpacity={0.85}
+        >
+          <Feather name="check-circle" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
+          <Text style={styles.evaluateBtnText}>Evaluasi Gizi SMAD</Text>
+        </TouchableOpacity>
+      </StickyCard>
 
       {/* RESULT SECTION */}
       {result && (
-        <View style={styles.resultContainer}>
+        <View style={styles.resultSectionWrapper}>
           <StickyCard
             backgroundColor={result.statusBg}
+            showLines={false}
             hasTapes={true}
-            tapeColor={result.isMadPass ? COLORS.washiTape : '#E74C3C'}
+            tapeColor={result.isMadPass ? COLORS.washiTape : '#EF4444'}
             tapePositions={['top-left', 'top-right']}
             style={styles.resultCard}
           >
-            {/* Header Badge */}
-            <View style={[styles.resultBadge, { backgroundColor: result.statusColor }]}>
+            {/* Status Title Banner */}
+            <View style={[styles.resultBanner, { backgroundColor: result.statusColor }]}>
               <Feather
                 name={result.isMadPass ? 'check-circle' : 'alert-triangle'}
-                size={22}
+                size={24}
                 color="#FFFFFF"
                 style={{ marginRight: 8 }}
               />
-              <Text style={styles.resultBadgeText}>{result.statusTitle}</Text>
+              <Text style={styles.resultBannerText}>{result.statusTitle}</Text>
             </View>
 
-            {/* Score Breakdown Table */}
-            <View style={styles.breakdownBox}>
-              <Text style={styles.breakdownTitle}>Rincian Capaian Indikator WHO:</Text>
-
+            {/* 3 Indikator Breakdown Cards */}
+            <View style={styles.indicatorsGrid}>
               {/* MDD */}
-              <View style={styles.breakdownRow}>
-                <Text style={styles.indicatorLabel}>Keragaman Pangan (MDD):</Text>
-                <View style={styles.indicatorValueRow}>
-                  <Text style={[styles.indicatorValue, { color: result.mdd.isPass ? COLORS.success : COLORS.danger }]}>
-                    {result.mdd.score}/8 Kelompok
-                  </Text>
-                  <Feather
-                    name={result.mdd.isPass ? 'check' : 'x'}
-                    size={16}
-                    color={result.mdd.isPass ? COLORS.success : COLORS.danger}
-                    style={{ marginLeft: 4 }}
-                  />
-                </View>
+              <View style={styles.indicatorCard}>
+                <Text style={styles.indTitle}>Keragaman (MDD)</Text>
+                <Text style={[styles.indScore, { color: result.mdd.isPass ? '#16A34A' : '#DC2626' }]}>
+                  {result.mdd.score}/8
+                </Text>
+                <Text style={styles.indStatus}>
+                  {result.mdd.isPass ? '✅ Tercapai (≥5)' : '❌ Kurang (<5)'}
+                </Text>
               </View>
 
               {/* MMF */}
-              <View style={styles.breakdownRow}>
-                <Text style={styles.indicatorLabel}>Frekuensi Makan (MMF):</Text>
-                <View style={styles.indicatorValueRow}>
-                  <Text style={[styles.indicatorValue, { color: result.mmf.isPass ? COLORS.success : COLORS.danger }]}>
-                    {result.mmf.count} kali (Target min. {result.mmf.target}x)
-                  </Text>
-                  <Feather
-                    name={result.mmf.isPass ? 'check' : 'x'}
-                    size={16}
-                    color={result.mmf.isPass ? COLORS.success : COLORS.danger}
-                    style={{ marginLeft: 4 }}
-                  />
-                </View>
+              <View style={styles.indicatorCard}>
+                <Text style={styles.indTitle}>Frekuensi (MMF)</Text>
+                <Text style={[styles.indScore, { color: result.mmf.isPass ? '#16A34A' : '#DC2626' }]}>
+                  {result.mmf.count}x
+                </Text>
+                <Text style={styles.indStatus}>
+                  {result.mmf.isPass ? `✅ Cukup (≥${result.mmf.target}x)` : `❌ Kurang (<${result.mmf.target}x)`}
+                </Text>
               </View>
 
-              {/* MMFF if applicable */}
-              {result.mmff.isApplicable && (
-                <View style={styles.breakdownRow}>
-                  <Text style={styles.indicatorLabel}>Frekuensi Susu (MMFF):</Text>
-                  <View style={styles.indicatorValueRow}>
-                    <Text style={[styles.indicatorValue, { color: result.mmff.isPass ? COLORS.success : COLORS.danger }]}>
-                      {result.mmff.count} kali (Target min. {result.mmff.target}x)
-                    </Text>
-                    <Feather
-                      name={result.mmff.isPass ? 'check' : 'x'}
-                      size={16}
-                      color={result.mmff.isPass ? COLORS.success : COLORS.danger}
-                      style={{ marginLeft: 4 }}
-                    />
-                  </View>
-                </View>
-              )}
+              {/* MMFF */}
+              <View style={styles.indicatorCard}>
+                <Text style={styles.indTitle}>Susu (MMFF)</Text>
+                <Text style={[styles.indScore, { color: result.mmff.isPass ? '#16A34A' : '#DC2626' }]}>
+                  {result.mmff.isApplicable ? `${result.mmff.count}x` : 'ASI'}
+                </Text>
+                <Text style={styles.indStatus}>
+                  {result.mmff.isApplicable
+                    ? (result.mmff.isPass ? '✅ Cukup (≥2x)' : '❌ Kurang (<2x)')
+                    : '🤱 Menyusu ASI'}
+                </Text>
+              </View>
             </View>
 
             {/* Recommendations List */}
-            <View style={styles.adviceBox}>
-              <Text style={styles.adviceTitle}>💡 Rekomendasi Menu & Tindak Lanjut:</Text>
+            <View style={styles.recommendationCard}>
+              <Text style={styles.recCardTitle}>💡 Rekomendasi Menu & Tindak Lanjut:</Text>
               {result.recommendations.map((rec, rIdx) => (
-                <View key={rIdx} style={styles.recItem}>
-                  <Text style={styles.recText}>{rec.text}</Text>
+                <View key={rIdx} style={styles.recItemBox}>
+                  <Text style={styles.recTextMain}>{rec.text}</Text>
                   {rec.highlight && (
-                    <Text style={styles.recHighlight}>👉 {rec.highlight}</Text>
+                    <Text style={styles.recHighlightText}>👉 {rec.highlight}</Text>
                   )}
                 </View>
               ))}
@@ -371,11 +415,11 @@ export default function SmadCheckScreen({ navigation }) {
             {/* Reset Button */}
             <TouchableOpacity
               onPress={handleReset}
-              style={styles.resetBtn}
+              style={styles.resetButton}
               activeOpacity={0.8}
             >
-              <Feather name="refresh-cw" size={16} color={COLORS.textBody} style={{ marginRight: 6 }} />
-              <Text style={styles.resetBtnText}>Hitung Ulang</Text>
+              <Feather name="refresh-cw" size={16} color="#475569" style={{ marginRight: 6 }} />
+              <Text style={styles.resetButtonText}>Hitung Ulang Menu Lainnya</Text>
             </TouchableOpacity>
           </StickyCard>
         </View>
@@ -392,78 +436,125 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     padding: 12,
-    borderRadius: 14,
-    marginBottom: 10,
+    borderRadius: 16,
+    marginBottom: 12,
     borderWidth: 1.5,
     borderColor: '#C6E3F4',
-    ...SHADOWS.card,
+    ...SHADOWS.cardFloating,
   },
-  infoIcon: {
+  infoIconWrapper: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#E0F2FE',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 10,
   },
   introText: {
     fontSize: 12,
-    color: COLORS.textBody,
+    color: '#334155',
     flex: 1,
     lineHeight: 18,
   },
   boldText: {
     fontWeight: '800',
-    color: COLORS.textTitle,
+    color: '#0F172A',
   },
-  sectionCard: {
-    marginVertical: 6,
+  formCard: {
+    width: '100%',
+    padding: 18,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    ...SHADOWS.cardFloating,
+  },
+  questionSection: {
+    marginBottom: 18,
+    paddingBottom: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
   },
   questionTitle: {
     fontSize: 14,
     fontWeight: '800',
-    color: COLORS.textTitle,
+    color: '#0F172A',
     marginBottom: 6,
   },
   questionSubtitle: {
     fontSize: 12,
-    color: COLORS.textMuted,
+    color: '#64748B',
     marginBottom: 10,
     lineHeight: 16,
   },
-  toggleRow: {
+  sectionHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+    flexWrap: 'wrap',
+  },
+  targetBadge: {
+    backgroundColor: '#E0F2FE',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  targetBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#0369A1',
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    gap: 8,
     marginTop: 4,
   },
   toggleBtn: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
     paddingVertical: 12,
     paddingHorizontal: 8,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: 'center',
-    marginHorizontal: 4,
     borderWidth: 1.5,
+  },
+  toggleBtnInactive: {
+    backgroundColor: '#F8FAFC',
     borderColor: '#CBD5E1',
   },
   toggleBtnActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primaryDark,
+    backgroundColor: '#0284C7',
+    borderColor: '#0369A1',
+    ...SHADOWS.button,
   },
-  toggleBtnActiveDanger: {
-    backgroundColor: '#E74C3C',
-    borderColor: '#C0392B',
+  toggleBtnDangerActive: {
+    backgroundColor: '#EF4444',
+    borderColor: '#DC2626',
+    ...SHADOWS.button,
   },
   toggleBtnText: {
     fontSize: 13,
-    fontWeight: '700',
-    color: COLORS.textBody,
+    fontWeight: '800',
+    color: '#1E293B',
   },
   toggleBtnTextActive: {
     color: '#FFFFFF',
-    fontWeight: '800',
+  },
+  toggleBtnSub: {
+    fontSize: 10,
+    fontWeight: '600',
+    color: '#64748B',
+    marginTop: 2,
+  },
+  toggleBtnSubActive: {
+    color: '#E0F2FE',
   },
   progressCard: {
     backgroundColor: '#F0F9FF',
     padding: 10,
-    borderRadius: 10,
-    marginBottom: 12,
+    borderRadius: 12,
+    marginBottom: 10,
     borderWidth: 1,
     borderColor: '#BAE6FD',
   },
@@ -476,7 +567,7 @@ const styles = StyleSheet.create({
   progressLabel: {
     fontSize: 11,
     fontWeight: '700',
-    color: COLORS.primaryDark,
+    color: '#0369A1',
   },
   progressScore: {
     fontSize: 11,
@@ -495,19 +586,21 @@ const styles = StyleSheet.create({
   foodList: {
     marginTop: 4,
   },
-  foodCheckboxItem: {
+  foodItemCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
     padding: 10,
     borderRadius: 12,
     marginBottom: 8,
     borderWidth: 1.5,
+  },
+  foodItemInactive: {
+    backgroundColor: '#F8FAFC',
     borderColor: '#E2E8F0',
   },
-  foodCheckboxItemActive: {
-    backgroundColor: '#E8F8F0',
-    borderColor: '#27AE60',
+  foodItemActive: {
+    backgroundColor: '#F0FDF4',
+    borderColor: '#86EFAC',
   },
   checkCircle: {
     width: 24,
@@ -521,10 +614,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   checkCircleActive: {
-    backgroundColor: '#27AE60',
-    borderColor: '#27AE60',
+    backgroundColor: '#10B981',
+    borderColor: '#10B981',
   },
-  foodInfo: {
+  foodContent: {
     flex: 1,
   },
   foodHeaderRow: {
@@ -533,148 +626,146 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 2,
   },
-  foodGroupNumber: {
+  foodGroupBadge: {
     fontSize: 10,
-    fontWeight: '700',
-    color: COLORS.primaryDark,
+    fontWeight: '800',
+    color: '#64748B',
   },
-  badgeWrapper: {
+  badgeTag: {
     backgroundColor: '#E2E8F0',
     paddingHorizontal: 6,
     paddingVertical: 1,
     borderRadius: 4,
   },
-  foodBadge: {
+  badgeTagText: {
     fontSize: 9,
     fontWeight: '700',
-    color: COLORS.textBody,
+    color: '#475569',
   },
-  foodName: {
+  foodTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: COLORS.textTitle,
+    color: '#0F172A',
   },
-  foodNameActive: {
+  foodTitleActive: {
     color: '#15803D',
   },
-  foodExamplesSmall: {
+  foodExamples: {
     fontSize: 11,
-    color: COLORS.textMuted,
+    color: '#64748B',
     marginTop: 1,
   },
-  evaluateButton: {
-    backgroundColor: COLORS.primary,
+  evaluateBtn: {
+    backgroundColor: '#0284C7',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
+    paddingVertical: 13,
+    paddingHorizontal: 16,
     borderRadius: 14,
-    marginTop: 14,
-    marginBottom: 10,
+    marginTop: 8,
+    width: '100%',
     ...SHADOWS.button,
   },
-  evaluateButtonText: {
+  evaluateBtnText: {
     color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '900',
-    letterSpacing: 0.3,
+    fontSize: 14,
+    fontWeight: '800',
+    letterSpacing: 0.2,
   },
-  resultContainer: {
-    marginTop: 12,
+  resultSectionWrapper: {
+    marginTop: 14,
+    width: '100%',
   },
   resultCard: {
     padding: 16,
+    borderRadius: 20,
   },
-  resultBadge: {
+  resultBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    marginBottom: 14,
+    paddingHorizontal: 14,
+    borderRadius: 14,
+    marginBottom: 12,
   },
-  resultBadgeText: {
+  resultBannerText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '900',
     letterSpacing: 0.5,
   },
-  breakdownBox: {
+  indicatorsGrid: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 12,
+  },
+  indicatorCard: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    borderWidth: 1,
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1.5,
     borderColor: '#E2E8F0',
   },
-  breakdownTitle: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: COLORS.textTitle,
-    marginBottom: 8,
+  indTitle: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#64748B',
+    textAlign: 'center',
   },
-  breakdownRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+  indScore: {
+    fontSize: 18,
+    fontWeight: '900',
+    marginVertical: 4,
   },
-  indicatorLabel: {
-    fontSize: 12,
-    color: COLORS.textBody,
-    fontWeight: '600',
+  indStatus: {
+    fontSize: 9,
+    fontWeight: '700',
+    color: '#334155',
+    textAlign: 'center',
   },
-  indicatorValueRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  indicatorValue: {
-    fontSize: 12,
-    fontWeight: '800',
-  },
-  adviceBox: {
+  recommendationCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
-    borderWidth: 1,
+    borderRadius: 14,
+    padding: 14,
+    borderWidth: 1.5,
     borderColor: '#E2E8F0',
   },
-  adviceTitle: {
+  recCardTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: COLORS.textTitle,
+    color: '#0F172A',
     marginBottom: 8,
   },
-  recItem: {
+  recItemBox: {
     marginBottom: 8,
   },
-  recText: {
+  recTextMain: {
     fontSize: 12,
-    color: COLORS.textBody,
+    color: '#334155',
     lineHeight: 18,
   },
-  recHighlight: {
+  recHighlightText: {
     fontSize: 12,
-    color: COLORS.primaryDark,
+    color: '#0284C7',
     fontWeight: '700',
     marginTop: 2,
   },
-  resetBtn: {
+  resetButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#E2E8F0',
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginTop: 4,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginTop: 12,
   },
-  resetBtnText: {
+  resetButtonText: {
     fontSize: 13,
-    fontWeight: '700',
-    color: COLORS.textBody,
+    fontWeight: '800',
+    color: '#334155',
   },
 });
