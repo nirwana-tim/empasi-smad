@@ -19,9 +19,18 @@ export default function InformationScreen({ navigation }) {
   // activeIndex: 0 s/d (EDUCATION_CHAPTERS.length - 1) adalah Bab Materi
   // activeIndex === EDUCATION_CHAPTERS.length adalah Halaman Terpisah: SELESAI
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+  const [checkedHomeItems, setCheckedHomeItems] = useState([0, 1, 2]);
   const totalChapters = EDUCATION_CHAPTERS.length;
   const isCompletionPage = activeChapterIndex === totalChapters;
   const chapter = !isCompletionPage ? EDUCATION_CHAPTERS[activeChapterIndex] : null;
+
+  const toggleHomeCheck = (index) => {
+    if (checkedHomeItems.includes(index)) {
+      setCheckedHomeItems(checkedHomeItems.filter((i) => i !== index));
+    } else {
+      setCheckedHomeItems([...checkedHomeItems, index]);
+    }
+  };
 
   // Jika sampai di Halaman Selesai, otomatis tandai materi telah rampung
   useEffect(() => {
@@ -131,20 +140,65 @@ export default function InformationScreen({ navigation }) {
                 <Text style={styles.sectionContent}>{section.content}</Text>
               )}
 
-              {/* List with step numbers */}
+              {/* List with step numbers (Interactive on Chapter 6 Checklist) */}
               {section.list && (
                 <View style={styles.listContainer}>
-                  {section.list.map((li, lIdx) => (
-                    <View key={lIdx} style={styles.listItem}>
-                      <View style={[styles.listNumber, { backgroundColor: chapter.color }]}>
-                        <Text style={styles.listNumberText}>{li.number}</Text>
+                  {section.list.map((li, lIdx) => {
+                    const isInteractive = chapter.id === 'responsive_feeding';
+                    const isChecked = isInteractive && checkedHomeItems.includes(lIdx);
+
+                    if (isInteractive) {
+                      return (
+                        <TouchableOpacity
+                          key={lIdx}
+                          onPress={() => toggleHomeCheck(lIdx)}
+                          style={[
+                            styles.listItem,
+                            isChecked ? styles.listItemChecked : styles.listItemUnchecked,
+                          ]}
+                          activeOpacity={0.7}
+                        >
+                          <View
+                            style={[
+                              styles.listNumber,
+                              isChecked
+                                ? styles.listNumberChecked
+                                : { backgroundColor: chapter.color },
+                            ]}
+                          >
+                            {isChecked ? (
+                              <Feather name="check" size={14} color="#FFFFFF" />
+                            ) : (
+                              <Text style={styles.listNumberText}>{li.number}</Text>
+                            )}
+                          </View>
+                          <View style={styles.listTextContainer}>
+                            <Text
+                              style={[
+                                styles.listTitle,
+                                isChecked && styles.listTitleCheckedText,
+                              ]}
+                            >
+                              {li.title}
+                            </Text>
+                            <Text style={styles.listDesc}>{li.desc}</Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }
+
+                    return (
+                      <View key={lIdx} style={styles.listItem}>
+                        <View style={[styles.listNumber, { backgroundColor: chapter.color }]}>
+                          <Text style={styles.listNumberText}>{li.number}</Text>
+                        </View>
+                        <View style={styles.listTextContainer}>
+                          <Text style={styles.listTitle}>{li.title}</Text>
+                          <Text style={styles.listDesc}>{li.desc}</Text>
+                        </View>
                       </View>
-                      <View style={styles.listTextContainer}>
-                        <Text style={styles.listTitle}>{li.title}</Text>
-                        <Text style={styles.listDesc}>{li.desc}</Text>
-                      </View>
-                    </View>
-                  ))}
+                    );
+                  })}
                 </View>
               )}
 
@@ -163,30 +217,6 @@ export default function InformationScreen({ navigation }) {
                       <Text style={styles.tableRowValue}>{row.freq}</Text>
                       <Text style={styles.tableRowLabel}>Porsi:</Text>
                       <Text style={styles.tableRowValue}>{row.portion}</Text>
-                    </View>
-                  ))}
-                </View>
-              )}
-
-              {/* Checklist items (Single Unified Card) */}
-              {section.checklist && (
-                <View style={styles.checklistCard}>
-                  <View style={styles.checklistHeader}>
-                    <Feather name="clipboard" size={15} color="#059669" style={{ marginRight: 6 }} />
-                    <Text style={styles.checklistHeaderTitle}>7 Kebiasaan Emas MP-ASI di Rumah</Text>
-                  </View>
-                  {section.checklist.map((item, cIdx) => (
-                    <View
-                      key={cIdx}
-                      style={[
-                        styles.checkRow,
-                        cIdx < section.checklist.length - 1 && styles.checkRowBorder,
-                      ]}
-                    >
-                      <View style={styles.checkIconWrapper}>
-                        <Feather name="check" size={11} color="#FFFFFF" />
-                      </View>
-                      <Text style={styles.checkRowText}>{item}</Text>
                     </View>
                   ))}
                 </View>
@@ -437,7 +467,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     padding: 12,
     borderRadius: 12,
-    borderWidth: 1,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+  },
+  listItemChecked: {
+    backgroundColor: '#F0FDF4',
+    borderColor: '#86EFAC',
+  },
+  listItemUnchecked: {
+    backgroundColor: '#F8FAFC',
     borderColor: '#E2E8F0',
   },
   listNumber: {
@@ -448,10 +486,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 10,
   },
+  listNumberChecked: {
+    backgroundColor: '#10B981',
+  },
   listNumberText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontFamily: FONTS.bold,
+  },
+  listTitleCheckedText: {
+    color: '#15803D',
   },
   listTextContainer: {
     flex: 1,
