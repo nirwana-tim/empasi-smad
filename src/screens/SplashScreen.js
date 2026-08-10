@@ -17,7 +17,7 @@ export default function SplashScreen({ navigation }) {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 500,
+      duration: 600,
       useNativeDriver: true,
     }).start();
 
@@ -34,22 +34,23 @@ export default function SplashScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" backgroundColor="transparent" translucent />
-      
-      {/* Full Screen Edge-to-Edge Image */}
-      <Image
-        source={require('../../Asset/LoadingScreen.png')}
-        style={StyleSheet.absoluteFillObject}
-        resizeMode="cover"
-      />
+      <StatusBar style="dark" backgroundColor="#EDF9FE" translucent />
 
-      {/* Interactive Skip on Tap */}
       <TouchableOpacity
         style={styles.touchArea}
         activeOpacity={1}
         onPress={handleSkip}
       >
-        {/* Floating Bottom Loading Bar */}
+        {/* Full Image Container - Perfectly fitted 100% without zoom/cropping */}
+        <View style={styles.imageWrapper}>
+          <Image
+            source={require('../../Asset/LoadingScreen.png')}
+            style={styles.splashImage}
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* Floating Loading Indicator */}
         <Animated.View style={[styles.loadingBadge, { opacity: fadeAnim }]}>
           <ActivityIndicator size="small" color={COLORS.primary} />
           <Text style={styles.loadingText}>Memuat Panduan MP-ASI...</Text>
@@ -66,23 +67,38 @@ const styles = StyleSheet.create({
   },
   touchArea: {
     flex: 1,
-    justifyContent: 'flex-end',
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
-    paddingBottom: 40,
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  imageWrapper: {
+    width: '100%',
+    height: '100%',
+    maxWidth: 480,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  splashImage: {
+    width: '100%',
+    height: '100%',
   },
   loadingBadge: {
+    position: 'absolute',
+    bottom: 24,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 30,
     borderWidth: 1.5,
     borderColor: '#BAE6FD',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.12,
     shadowRadius: 6,
     elevation: 4,
   },
@@ -90,6 +106,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '800',
     color: COLORS.textTitle,
-    marginLeft: 10,
+    marginLeft: 8,
   },
 });

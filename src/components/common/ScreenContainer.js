@@ -32,7 +32,9 @@ export default function ScreenContainer({
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          {children}
+          <View style={styles.centerWrapper}>
+            {children}
+          </View>
         </Container>
       </SafeAreaView>
     </ImageBackground>
@@ -43,15 +45,23 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     backgroundColor: COLORS.bgScreen,
+    width: '100%',
+    height: '100%',
   },
   safeArea: {
     flex: 1,
   },
   container: {
     flex: 1,
+    width: '100%',
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingBottom: 32,
+    paddingBottom: 36,
+  },
+  centerWrapper: {
+    width: '100%',
+    maxWidth: 480,
+    alignSelf: 'center',
   },
 });
