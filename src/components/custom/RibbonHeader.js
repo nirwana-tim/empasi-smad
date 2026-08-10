@@ -12,8 +12,8 @@ export default function RibbonHeader({
   title,
   subtitle,
   onBack,
-  backgroundColor = COLORS.ribbonTeal,
-  textColor = '#0F172A',
+  backgroundColor = '#208A91',
+  textColor = '#FFFFFF',
   showBackButton = true,
   rightAction,
 }) {
@@ -27,7 +27,7 @@ export default function RibbonHeader({
             hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             activeOpacity={0.7}
           >
-            <Feather name="arrow-left" size={24} color="#0F172A" />
+            <Feather name="arrow-left" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         )}
 
@@ -59,24 +59,23 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 14,
     paddingRight: 10,
+    width: '100%',
   },
   ribbonBody: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 54,
-    paddingHorizontal: 16,
-    borderTopRightRadius: 0,
-    borderBottomRightRadius: 0,
-    borderTopLeftRadius: 6,
-    borderBottomLeftRadius: 6,
+    height: 58,
+    paddingHorizontal: 14,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
     elevation: 4,
   },
   chevronArrow: {
@@ -84,30 +83,34 @@ const styles = StyleSheet.create({
     height: 0,
     backgroundColor: 'transparent',
     borderStyle: 'solid',
-    borderTopWidth: 27,
-    borderBottomWidth: 27,
+    borderTopWidth: 29,
+    borderBottomWidth: 29,
     borderLeftWidth: 18,
     borderTopColor: 'transparent',
     borderBottomColor: 'transparent',
   },
   backButton: {
-    marginRight: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    marginRight: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
     borderRadius: 20,
-    padding: 6,
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   titleContainer: {
     flex: 1,
     justifyContent: 'center',
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '900',
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
   },
   subtitle: {
-    fontSize: 12,
-    color: '#334155',
+    fontSize: 11,
+    color: '#E0F2FE',
+    fontWeight: '600',
     marginTop: 1,
   },
   rightActionContainer: {

@@ -2,20 +2,20 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { COLORS } from '../../constants/theme';
 
-export default function ZScoreGauge({ zScore = 0, statusColor = COLORS.success }) {
+export default function ZScoreGauge({ zScore = 0, statusColor = '#27AE60' }) {
   // Rentang tampilan Z-score: -4 SD sampai +4 SD
   const minZ = -4;
   const maxZ = 4;
   const clampedZ = Math.max(minZ, Math.min(maxZ, zScore));
   const rawPercentage = ((clampedZ - minZ) / (maxZ - minZ)) * 100;
   // Clamp bubble position so badge text never overflows left or right edge
-  const bubblePercentage = Math.max(10, Math.min(90, rawPercentage));
+  const bubblePercentage = Math.max(12, Math.min(88, rawPercentage));
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerLabel}>Posisi pada Kurva Standar WHO (PB/U & TB/U):</Text>
+      <Text style={styles.headerLabel}>Posisi pada Kurva Pertumbuhan WHO (PB/U & TB/U):</Text>
 
-      {/* Pointer Indicator */}
+      {/* Pointer Indicator with Floating Badge */}
       <View style={styles.pointerTrack}>
         <View style={[styles.pointerWrapper, { left: `${bubblePercentage}%` }]}>
           <View style={[styles.pointerBadge, { backgroundColor: statusColor }]}>
@@ -27,17 +27,17 @@ export default function ZScoreGauge({ zScore = 0, statusColor = COLORS.success }
 
       {/* Multi-segmented Spectrum Bar */}
       <View style={styles.bar}>
-        <View style={[styles.segment, { flex: 1, backgroundColor: '#E74C3C' }]} />
-        <View style={[styles.segment, { flex: 1, backgroundColor: '#F39C12' }]} />
-        <View style={[styles.segment, { flex: 5, backgroundColor: '#27AE60' }]} />
-        <View style={[styles.segment, { flex: 1, backgroundColor: '#2980B9' }]} />
+        <View style={[styles.segment, { flex: 1.25, backgroundColor: '#EF4444' }]} />
+        <View style={[styles.segment, { flex: 1.25, backgroundColor: '#F59E0B' }]} />
+        <View style={[styles.segment, { flex: 6.25, backgroundColor: '#10B981' }]} />
+        <View style={[styles.segment, { flex: 1.25, backgroundColor: '#3B82F6' }]} />
       </View>
 
       {/* Axis Scale Markers */}
       <View style={styles.scaleRow}>
         <Text style={styles.scaleText}>-3 SD</Text>
         <Text style={styles.scaleText}>-2 SD</Text>
-        <Text style={[styles.scaleText, { fontWeight: '700' }]}>0 (Median)</Text>
+        <Text style={[styles.scaleText, styles.scaleTextMedian]}>0 (Median)</Text>
         <Text style={styles.scaleText}>+2 SD</Text>
         <Text style={styles.scaleText}>+3 SD</Text>
       </View>
@@ -45,19 +45,19 @@ export default function ZScoreGauge({ zScore = 0, statusColor = COLORS.success }
       {/* Legend Labels */}
       <View style={styles.legendRow}>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#E74C3C' }]} />
+          <View style={[styles.legendDot, { backgroundColor: '#EF4444' }]} />
           <Text style={styles.legendText}>Sangat Pendek</Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#F39C12' }]} />
+          <View style={[styles.legendDot, { backgroundColor: '#F59E0B' }]} />
           <Text style={styles.legendText}>Pendek</Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#27AE60' }]} />
+          <View style={[styles.legendDot, { backgroundColor: '#10B981' }]} />
           <Text style={styles.legendText}>Normal</Text>
         </View>
         <View style={styles.legendItem}>
-          <View style={[styles.legendDot, { backgroundColor: '#2980B9' }]} />
+          <View style={[styles.legendDot, { backgroundColor: '#3B82F6' }]} />
           <Text style={styles.legendText}>Tinggi</Text>
         </View>
       </View>
@@ -67,22 +67,22 @@ export default function ZScoreGauge({ zScore = 0, statusColor = COLORS.success }
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 14,
-    padding: 12,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
+    marginVertical: 12,
+    padding: 14,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1.5,
     borderColor: '#E2E8F0',
     width: '100%',
   },
   headerLabel: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
     color: COLORS.textTitle,
     marginBottom: 16,
   },
   pointerTrack: {
-    height: 28,
+    height: 30,
     position: 'relative',
     marginBottom: 4,
     width: '100%',
@@ -94,13 +94,13 @@ const styles = StyleSheet.create({
     width: 70,
   },
   pointerBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingHorizontal: 9,
+    paddingVertical: 3,
+    borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowOpacity: 0.22,
+    shadowRadius: 3,
     elevation: 3,
   },
   pointerText: {
@@ -130,20 +130,25 @@ const styles = StyleSheet.create({
   scaleRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 4,
+    marginTop: 6,
     width: '100%',
   },
   scaleText: {
     fontSize: 10,
     color: COLORS.textMuted,
+    fontWeight: '600',
+  },
+  scaleTextMedian: {
+    fontWeight: '800',
+    color: '#0F172A',
   },
   legendRow: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 12,
-    paddingTop: 8,
+    paddingTop: 10,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: '#E2E8F0',
     width: '100%',
     flexWrap: 'wrap',
     gap: 4,
@@ -161,6 +166,6 @@ const styles = StyleSheet.create({
   legendText: {
     fontSize: 10,
     color: COLORS.textBody,
-    fontWeight: '600',
+    fontWeight: '700',
   },
 });

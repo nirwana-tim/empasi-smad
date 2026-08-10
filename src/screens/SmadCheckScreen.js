@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,8 @@ import { StorageService } from '../services/storageService';
 import { COLORS, SHADOWS } from '../constants/theme';
 
 export default function SmadCheckScreen({ navigation }) {
+  const scrollRef = useRef(null);
+
   // Form States
   const [ageGroup, setAgeGroup] = useState('6-8'); // '6-8' atau '9-23'
   const [isBreastfeeding, setIsBreastfeeding] = useState(true);
@@ -55,16 +57,25 @@ export default function SmadCheckScreen({ navigation }) {
 
     setResult(evalResult);
 
-    // Simpan ke riwayat lokal
-    await StorageService.saveSmadHistory({
-      ageGroup,
-      isBreastfeeding,
-      selectedFoodIds,
-      mealFrequency,
-      milkFrequency,
-      isMadPass: evalResult.isMadPass,
-      mddScore: evalResult.mdd.score,
-    });
+    // Auto-scroll ke hasil evaluasi
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    }, 150);
+
+    // Simpan ke riwayat lokal (non-blocking)
+    try {
+      await StorageService.saveSmadHistory({
+        ageGroup,
+        isBreastfeeding,
+        selectedFoodIds,
+        mealFrequency,
+        milkFrequency,
+        isMadPass: evalResult.isMadPass,
+        mddScore: evalResult.mdd.score,
+      });
+    } catch (err) {
+      console.log('Error saving SMAD history:', err);
+    }
   };
 
   const handleReset = () => {
@@ -77,7 +88,7 @@ export default function SmadCheckScreen({ navigation }) {
   };
 
   return (
-    <ScreenContainer backgroundImage={require('../../Asset/defaultbg.png')}>
+    <ScreenContainer ref={scrollRef} backgroundImage={require('../../Asset/defaultbg.png')}>
       {/* Header */}
       <RibbonHeader
         title="Cek SMAD"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import {
   StyleSheet,
   ImageBackground,
@@ -9,13 +9,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { COLORS } from '../../constants/theme';
 
-export default function ScreenContainer({
-  children,
-  scrollable = true,
-  backgroundImage = require('../../../Asset/defaultbg.png'),
-  style,
-  contentContainerStyle,
-}) {
+const ScreenContainer = forwardRef(function ScreenContainer(
+  {
+    children,
+    scrollable = true,
+    backgroundImage = require('../../../Asset/defaultbg.png'),
+    style,
+    contentContainerStyle,
+  },
+  ref
+) {
   const Container = scrollable ? ScrollView : View;
 
   return (
@@ -27,6 +30,7 @@ export default function ScreenContainer({
       <StatusBar style="dark" backgroundColor="transparent" translucent />
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
         <Container
+          ref={ref}
           style={[styles.container, style]}
           contentContainerStyle={scrollable ? [styles.scrollContent, contentContainerStyle] : undefined}
           showsVerticalScrollIndicator={false}
@@ -39,7 +43,9 @@ export default function ScreenContainer({
       </SafeAreaView>
     </ImageBackground>
   );
-}
+});
+
+export default ScreenContainer;
 
 const styles = StyleSheet.create({
   background: {
