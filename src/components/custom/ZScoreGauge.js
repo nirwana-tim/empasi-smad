@@ -7,7 +7,9 @@ export default function ZScoreGauge({ zScore = 0, statusColor = COLORS.success }
   const minZ = -4;
   const maxZ = 4;
   const clampedZ = Math.max(minZ, Math.min(maxZ, zScore));
-  const percentage = ((clampedZ - minZ) / (maxZ - minZ)) * 100;
+  const rawPercentage = ((clampedZ - minZ) / (maxZ - minZ)) * 100;
+  // Clamp bubble position so badge text never overflows left or right edge
+  const bubblePercentage = Math.max(10, Math.min(90, rawPercentage));
 
   return (
     <View style={styles.container}>
@@ -15,7 +17,7 @@ export default function ZScoreGauge({ zScore = 0, statusColor = COLORS.success }
 
       {/* Pointer Indicator */}
       <View style={styles.pointerTrack}>
-        <View style={[styles.pointerWrapper, { left: `${percentage}%` }]}>
+        <View style={[styles.pointerWrapper, { left: `${bubblePercentage}%` }]}>
           <View style={[styles.pointerBadge, { backgroundColor: statusColor }]}>
             <Text style={styles.pointerText}>{zScore > 0 ? `+${zScore}` : zScore} SD</Text>
           </View>
@@ -71,6 +73,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E2E8F0',
+    width: '100%',
   },
   headerLabel: {
     fontSize: 12,
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
     height: 28,
     position: 'relative',
     marginBottom: 4,
+    width: '100%',
   },
   pointerWrapper: {
     position: 'absolute',
@@ -118,6 +122,7 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 6,
     overflow: 'hidden',
+    width: '100%',
   },
   segment: {
     height: '100%',
@@ -126,6 +131,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 4,
+    width: '100%',
   },
   scaleText: {
     fontSize: 10,
@@ -138,6 +144,9 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     borderTopWidth: 1,
     borderTopColor: '#F1F5F9',
+    width: '100%',
+    flexWrap: 'wrap',
+    gap: 4,
   },
   legendItem: {
     flexDirection: 'row',

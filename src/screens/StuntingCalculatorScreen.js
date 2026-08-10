@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  ScrollView,
   Alert,
 } from 'react-native';
 import { Feather, FontAwesome6 } from '@expo/vector-icons';
@@ -94,7 +95,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
           >
             <FontAwesome6
               name="mars"
-              size={18}
+              size={16}
               color={gender === 'boy' ? '#FFFFFF' : '#2563EB'}
               style={{ marginRight: 6 }}
             />
@@ -113,7 +114,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
           >
             <FontAwesome6
               name="venus"
-              size={18}
+              size={16}
               color={gender === 'girl' ? '#FFFFFF' : '#DB2777'}
               style={{ marginRight: 6 }}
             />
@@ -134,28 +135,35 @@ export default function StuntingCalculatorScreen({ navigation }) {
           color={gender === 'boy' ? '#2563EB' : '#DB2777'}
         />
 
-        {/* Quick Age Shortcuts */}
-        <View style={styles.quickAgeRow}>
+        {/* Quick Age Shortcuts (Horizontal Scroll to prevent any wrapping overflow) */}
+        <View style={styles.quickAgeContainer}>
           <Text style={styles.quickAgeLabel}>Pilih Cepat:</Text>
-          {[6, 9, 12, 18, 24, 36, 48].map((m) => (
-            <TouchableOpacity
-              key={m}
-              onPress={() => setAgeMonths(m)}
-              style={[
-                styles.quickAgeBtn,
-                ageMonths === m && styles.quickAgeBtnActive,
-              ]}
-            >
-              <Text style={[styles.quickAgeText, ageMonths === m && styles.quickAgeTextActive]}>
-                {m} bln
-              </Text>
-            </TouchableOpacity>
-          ))}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.quickAgeScroll}
+          >
+            {[6, 9, 12, 18, 24, 36, 48, 60].map((m) => (
+              <TouchableOpacity
+                key={m}
+                onPress={() => setAgeMonths(m)}
+                style={[
+                  styles.quickAgeBtn,
+                  ageMonths === m && styles.quickAgeBtnActive,
+                ]}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.quickAgeText, ageMonths === m && styles.quickAgeTextActive]}>
+                  {m} bln
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </View>
 
         {/* Length / Height Input */}
         <View style={styles.measurementHeader}>
-          <Text style={styles.inputLabel}>
+          <Text style={styles.inputLabelBold}>
             {isUnder24 ? 'Panjang Badan (PB):' : 'Tinggi Badan (TB):'}
           </Text>
           <View style={styles.measurementBadge}>
@@ -165,6 +173,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
           </View>
         </View>
 
+        {/* Input with unit box - Constrained width */}
         <View style={styles.inputWithUnitRow}>
           <TextInput
             value={lengthInput}
@@ -172,7 +181,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
             keyboardType="decimal-pad"
             placeholder="Contoh: 75.5"
             placeholderTextColor={COLORS.textMuted}
-            style={[styles.textInput, styles.lengthInput]}
+            style={styles.lengthInput}
           />
           <View style={styles.unitBadge}>
             <Text style={styles.unitBadgeText}>cm</Text>
@@ -180,7 +189,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
         </View>
 
         <Text style={styles.measurementNote}>
-          * Standar WHO: Anak &lt; 24 bulan diukur panjang badan (posisi terlentang), anak &ge; 24 bulan diukur tinggi badan (posisi berdiri tegak).
+          * Standar WHO: Anak &lt; 24 bulan diukur panjang badan (terlentang), anak &ge; 24 bulan diukur tinggi badan (berdiri tegak).
         </Text>
 
         {/* Submit Button */}
@@ -261,14 +270,19 @@ export default function StuntingCalculatorScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   formCard: {
-    padding: 16,
+    width: '100%',
   },
   inputLabel: {
     fontSize: 13,
     fontWeight: '700',
     color: COLORS.textTitle,
     marginBottom: 6,
-    marginTop: 6,
+    marginTop: 4,
+  },
+  inputLabelBold: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: COLORS.textTitle,
   },
   textInput: {
     backgroundColor: '#F8FAFC',
@@ -280,23 +294,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.textTitle,
     marginBottom: 10,
+    width: '100%',
   },
   genderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 8,
+    width: '100%',
   },
   genderBtn: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 11,
     backgroundColor: '#F8FAFC',
     borderRadius: 12,
-    marginHorizontal: 4,
+    marginHorizontal: 3,
     borderWidth: 1.5,
     borderColor: '#CBD5E1',
+    minWidth: 0,
   },
   genderBtnBoyActive: {
     backgroundColor: '#2563EB',
@@ -307,7 +324,7 @@ const styles = StyleSheet.create({
     borderColor: '#BE185D',
   },
   genderBtnText: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
     color: COLORS.textBody,
   },
@@ -315,28 +332,27 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '800',
   },
-  quickAgeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    marginTop: 4,
-    marginBottom: 8,
+  quickAgeContainer: {
+    marginVertical: 6,
+    width: '100%',
   },
   quickAgeLabel: {
     fontSize: 11,
     color: COLORS.textMuted,
     fontWeight: '700',
-    marginRight: 6,
+    marginBottom: 4,
+  },
+  quickAgeScroll: {
+    paddingVertical: 2,
   },
   quickAgeBtn: {
     backgroundColor: '#F1F5F9',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    marginRight: 4,
-    marginBottom: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    marginRight: 6,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#CBD5E1',
   },
   quickAgeBtnActive: {
     backgroundColor: COLORS.primaryLight,
@@ -355,14 +371,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 6,
-    marginBottom: 4,
+    marginTop: 8,
+    marginBottom: 6,
+    flexWrap: 'wrap',
   },
   measurementBadge: {
     backgroundColor: '#E0F2FE',
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 3,
     borderRadius: 6,
+    marginTop: 2,
   },
   measurementBadgeText: {
     fontSize: 10,
@@ -372,23 +390,32 @@ const styles = StyleSheet.create({
   inputWithUnitRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    width: '100%',
   },
   lengthInput: {
     flex: 1,
+    minWidth: 0,
+    height: 48,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1.5,
+    borderColor: '#CBD5E1',
+    borderRadius: 12,
+    paddingHorizontal: 14,
     fontSize: 18,
     fontWeight: '800',
-    marginBottom: 0,
+    color: COLORS.textTitle,
   },
   unitBadge: {
     backgroundColor: COLORS.primaryLight,
+    width: 52,
     height: 48,
-    paddingHorizontal: 16,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 8,
     borderWidth: 1.5,
     borderColor: '#BAE6FD',
+    flexShrink: 0,
   },
   unitBadgeText: {
     fontSize: 15,
@@ -409,16 +436,18 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 14,
     marginTop: 16,
+    width: '100%',
     ...SHADOWS.button,
   },
   calculateBtnText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '900',
     letterSpacing: 0.3,
   },
   resultWrapper: {
     marginTop: 12,
+    width: '100%',
   },
   resultCard: {
     padding: 16,

@@ -45,7 +45,7 @@ export default function StickyCard({
   const CardWrapper = onPress ? TouchableOpacity : View;
 
   return (
-    <Animated.View style={[{ transform: [{ scale: scaleAnim }] }, styles.outerContainer, style]}>
+    <Animated.View style={[styles.outerContainer, { transform: [{ scale: scaleAnim }] }, style]}>
       {hasTapes && tapePositions.includes('top-left') && (
         <WashiTape position="top-left" color={tapeColor} />
       )}
@@ -103,13 +103,15 @@ export default function StickyCard({
 
 const styles = StyleSheet.create({
   outerContainer: {
+    width: '100%',
     marginVertical: 8,
     position: 'relative',
   },
   card: {
-    borderRadius: 14,
+    width: '100%',
+    borderRadius: 16,
     padding: 16,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#C6E3F4',
     overflow: 'hidden',
     ...SHADOWS.cardFloating,
