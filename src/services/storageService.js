@@ -4,6 +4,7 @@ const KEYS = {
   CHILD_PROFILE: '@empasi_child_profile',
   SMAD_HISTORY: '@empasi_smad_history',
   STUNTING_HISTORY: '@empasi_stunting_history',
+  QUESTIONNAIRE_PROGRESS: '@empasi_questionnaire_progress',
 };
 
 export const StorageService = {
@@ -84,6 +85,55 @@ export const StorageService = {
     } catch (e) {
       console.error('Error getting stunting history:', e);
       return [];
+    }
+  },
+
+  // Ambil status progress kuisioner (LMS flow: Pre-Test -> Baca Materi -> Post-Test)
+  async getQuestionnaireProgress() {
+    try {
+      const data = await AsyncStorage.getItem(KEYS.QUESTIONNAIRE_PROGRESS);
+      return data ? JSON.parse(data) : { hasCompletedPretest: false, hasReadMaterials: false };
+    } catch (e) {
+      console.error('Error getting questionnaire progress:', e);
+      return { hasCompletedPretest: false, hasReadMaterials: false };
+    }
+  },
+
+  // Simpan status Pre-Test
+  async setPretestCompleted(status = true) {
+    try {
+      const current = await this.getQuestionnaireProgress();
+      const updated = { ...current, hasCompletedPretest: status };
+      await AsyncStorage.setItem(KEYS.QUESTIONNAIRE_PROGRESS, JSON.stringify(updated));
+      return updated;
+    } catch (e) {
+      console.error('Error setting pretest status:', e);
+      return null;
+    }
+  },
+
+  // Simpan status Selesai Baca Materi Edukasi
+  async setMaterialsCompleted(status = true) {
+    try {
+      const current = await this.getQuestionnaireProgress();
+      const updated = { ...current, hasReadMaterials: status };
+      await AsyncStorage.setItem(KEYS.QUESTIONNAIRE_PROGRESS, JSON.stringify(updated));
+      return updated;
+    } catch (e) {
+      console.error('Error setting materials status:', e);
+      return null;
+    }
+  },
+
+  // Reset progress kuisioner (untuk kebutuhan pengujian)
+  async resetQuestionnaireProgress() {
+    try {
+      const initial = { hasCompletedPretest: false, hasReadMaterials: false };
+      await AsyncStorage.setItem(KEYS.QUESTIONNAIRE_PROGRESS, JSON.stringify(initial));
+      return initial;
+    } catch (e) {
+      console.error('Error resetting questionnaire progress:', e);
+      return null;
     }
   },
 };

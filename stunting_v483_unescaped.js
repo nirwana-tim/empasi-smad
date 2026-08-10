@@ -8,10 +8,10 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import ScreenContainer from '../components/common/ScreenContainer';
 import RibbonHeader from '../components/custom/RibbonHeader';
-import WashiTape from '../components/custom/WashiTape';
+import StickyCard from '../components/custom/StickyCard';
 import ZScoreGauge from '../components/custom/ZScoreGauge';
 import { calculateStuntingZScore } from '../services/stuntingService';
 import { StorageService } from '../services/storageService';
@@ -27,7 +27,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [result, setResult] = useState(null);
 
-  // Helper untuk kalkulasi Z-score
+  // Helper untuk melakukan kalkulasi Z-score secara aman
   const executeCalculation = (lengthStr, age, genderVal) => {
     const cleanStr = String(lengthStr || '').trim().replace(',', '.');
     const parsedLength = parseFloat(cleanStr);
@@ -60,7 +60,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
     const { calcResult, parsedLength } = res;
     setResult(calcResult);
 
-    // Auto-scroll ke hasil Z-Score
+    // Auto-scroll ke hasil agar pengguna langsung melihat meter kurva & status
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
     }, 150);
@@ -81,7 +81,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
     }
   };
 
-  // Auto-update jika hasil sudah terbuka dan user mengganti umur/gender
+  // Jika hasil sudah pernah dihitung dan user mengubah umur/gender, perbarui otomatis jika input valid
   useEffect(() => {
     if (result) {
       const res = executeCalculation(lengthInput, ageMonths, gender);
@@ -109,12 +109,15 @@ export default function StuntingCalculatorScreen({ navigation }) {
         onBack={() => navigation.goBack()}
       />
 
-      {/* SINGLE CLEAN CARD SURFACE (No Double Borders / No Card-in-Card) */}
-      <View style={styles.singleMainCard}>
-        {/* Washi Tapes on Corners */}
-        <WashiTape position="top-left" color={COLORS.washiTape} />
-        <WashiTape position="top-right" color={COLORS.washiTape} />
-
+      {/* Main Input Form Card */}
+      <StickyCard
+        backgroundColor="#FFFFFF"
+        showLines={false}
+        hasTapes={true}
+        tapeColor={COLORS.washiTape}
+        tapePositions={['top-left', 'top-right']}
+        style={styles.formCard}
+      >
         {/* Field 1: Nama Anak */}
         <View style={styles.formGroup}>
           <Text style={styles.fieldLabel}>Nama Panggilan Anak (Opsional):</Text>
@@ -130,15 +133,15 @@ export default function StuntingCalculatorScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Field 2: Jenis Kelamin (Clean Side-by-Side Buttons) */}
+        {/* Field 2: Jenis Kelamin */}
         <View style={styles.formGroup}>
           <Text style={styles.fieldLabel}>Jenis Kelamin Anak:</Text>
           <View style={styles.genderRow}>
             <TouchableOpacity
               onPress={() => setGender('boy')}
               style={[
-                styles.genderBtn,
-                gender === 'boy' ? styles.genderBtnBoyActive : styles.genderBtnInactive,
+                styles.genderCard,
+                gender === 'boy' ? styles.genderCardBoyActive : styles.genderCardBoyInactive,
               ]}
               activeOpacity={0.8}
             >
@@ -161,8 +164,8 @@ export default function StuntingCalculatorScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => setGender('girl')}
               style={[
-                styles.genderBtn,
-                gender === 'girl' ? styles.genderBtnGirlActive : styles.genderBtnInactive,
+                styles.genderCard,
+                gender === 'girl' ? styles.genderCardGirlActive : styles.genderCardGirlInactive,
               ]}
               activeOpacity={0.8}
             >
@@ -197,7 +200,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
             </View>
           </View>
 
-          {/* Stepper Counter */}
+          {/* Large Stepper Counter */}
           <View style={styles.stepperContainer}>
             <TouchableOpacity
               onPress={() => setAgeMonths(Math.max(0, ageMonths - 1))}
@@ -235,7 +238,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
 
           {/* Quick Age Shortcuts */}
           <View style={styles.quickAgeWrapper}>
-            <Text style={styles.quickAgeTitle}>Pilihan Cepat Umur:</Text>
+            <Text style={styles.quickAgeTitle}>Pilihan Cepat:</Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -249,7 +252,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
                     onPress={() => setAgeMonths(m)}
                     style={[
                       styles.quickChip,
-                      isSelected && (gender === 'boy' ? styles.quickChipBoy : styles.quickChipGirl),
+                      isSelected && (gender === 'boy' ? styles.quickChipBoyActive : styles.quickChipGirlActive),
                     ]}
                     activeOpacity={0.7}
                   >
@@ -268,20 +271,26 @@ export default function StuntingCalculatorScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Field 4: Pengukuran PB / TB */}
+        {/* Field 4: Panjang / Tinggi Badan */}
         <View style={styles.formGroup}>
           <View style={styles.labelWithBadgeRow}>
             <Text style={styles.fieldLabel}>
               {isUnder24 ? 'Panjang Badan (PB):' : 'Tinggi Badan (TB):'}
             </Text>
             <View style={[styles.posBadge, isUnder24 ? styles.posBadgeLie : styles.posBadgeStand]}>
+              <Feather
+                name={isUnder24 ? 'moon' : 'user'}
+                size={12}
+                color={isUnder24 ? '#0284C7' : '#16A34A'}
+                style={{ marginRight: 4 }}
+              />
               <Text style={[styles.posBadgeText, { color: isUnder24 ? '#0369A1' : '#15803D' }]}>
-                {isUnder24 ? '🟢 Posisi Terlentang (Tidur)' : '🔵 Posisi Berdiri Tegak'}
+                {isUnder24 ? 'Posisi Terlentang (Tidur)' : 'Posisi Berdiri Tegak'}
               </Text>
             </View>
           </View>
 
-          {/* Measurement Box with Guaranteed Visible Unit Badge */}
+          {/* Measurement Input Box */}
           <View style={[styles.measurementBox, errorMessage ? styles.measurementBoxError : null]}>
             <Text style={styles.rulerIcon}>📏</Text>
             <TextInput
@@ -295,8 +304,8 @@ export default function StuntingCalculatorScreen({ navigation }) {
               placeholderTextColor="#94A3B8"
               style={styles.lengthInputField}
             />
-            <View style={styles.unitBadge}>
-              <Text style={styles.unitBadgeText}>cm</Text>
+            <View style={styles.unitChip}>
+              <Text style={styles.unitChipText}>cm</Text>
             </View>
           </View>
 
@@ -305,7 +314,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
           ) : null}
 
           <Text style={styles.guidelineNote}>
-            ℹ️ Standar WHO: Balita &lt; 24 bulan diukur panjang badan (posisi tidur), dan &ge; 24 bulan diukur tinggi badan (posisi berdiri).
+            ℹ️ Sesuai standar Kemenkes/WHO: Balita &lt; 24 bulan diukur panjang badan posisi tidur, dan &ge; 24 bulan diukur tinggi badan posisi berdiri tegak.
           </Text>
         </View>
 
@@ -318,18 +327,22 @@ export default function StuntingCalculatorScreen({ navigation }) {
           ]}
           activeOpacity={0.85}
         >
-          <Feather name="activity" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
-          <Text style={styles.ctaButtonText}>Hitung Status Stunting</Text>
+          <Feather name="activity" size={20} color="#FFFFFF" style={{ marginRight: 10 }} />
+          <Text style={styles.ctaButtonText}>Hitung Status Stunting Sekarang</Text>
         </TouchableOpacity>
-      </View>
+      </StickyCard>
 
       {/* RESULT DASHBOARD SECTION */}
       {result && (
         <View style={styles.resultSection}>
-          <View style={[styles.resultCard, { backgroundColor: result.statusBg }]}>
-            <WashiTape position="top-left" color={result.isStunting ? '#EF4444' : COLORS.washiTape} />
-            <WashiTape position="top-right" color={result.isStunting ? '#EF4444' : COLORS.washiTape} />
-
+          <StickyCard
+            backgroundColor={result.statusBg}
+            showLines={false}
+            hasTapes={true}
+            tapeColor={result.isStunting ? '#EF4444' : COLORS.washiTape}
+            tapePositions={['top-left', 'top-right']}
+            style={styles.resultCard}
+          >
             {/* Status Title Banner */}
             <View style={[styles.resultTitleBanner, { backgroundColor: result.statusColor }]}>
               <Feather
@@ -384,7 +397,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               <Feather name="refresh-cw" size={16} color="#475569" style={{ marginRight: 6 }} />
               <Text style={styles.resetButtonText}>Hitung Balita Lainnya</Text>
             </TouchableOpacity>
-          </View>
+          </StickyCard>
         </View>
       )}
 
@@ -394,35 +407,30 @@ export default function StuntingCalculatorScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  singleMainCard: {
-    paddingTop: 26,
-    paddingBottom: 22,
-    paddingHorizontal: 18,
-    borderRadius: 20,
+  formCard: {
     width: '100%',
+    padding: 18,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
-    marginTop: 4,
-    position: 'relative',
     ...SHADOWS.cardFloating,
   },
   formGroup: {
-    marginBottom: 20,
+    marginBottom: 16,
   },
   fieldLabel: {
     fontSize: 13,
     fontWeight: '800',
     color: '#0F172A',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   labelWithBadgeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
     flexWrap: 'wrap',
-    gap: 4,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -431,55 +439,52 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#CBD5E1',
     borderRadius: 14,
-    paddingHorizontal: 14,
-    height: 50,
+    paddingHorizontal: 12,
+    height: 48,
   },
   inputEmoji: {
     fontSize: 18,
-    marginRight: 10,
-    flexShrink: 0,
+    marginRight: 8,
   },
   textInput: {
     flex: 1,
-    minWidth: 0,
     fontSize: 14,
     color: '#0F172A',
-    fontWeight: '700',
-    paddingVertical: 0,
+    fontWeight: '600',
   },
   genderRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginTop: 2,
+    gap: 8,
   },
-  genderBtn: {
+  genderCard: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
     borderRadius: 14,
-    height: 50,
-  },
-  genderBtnInactive: {
-    backgroundColor: '#F1F5F9',
     borderWidth: 1.5,
-    borderColor: '#E2E8F0',
   },
-  genderBtnBoyActive: {
+  genderCardBoyActive: {
     backgroundColor: '#2563EB',
-    borderWidth: 1.5,
     borderColor: '#1D4ED8',
     ...SHADOWS.button,
   },
-  genderBtnGirlActive: {
+  genderCardBoyInactive: {
+    backgroundColor: '#EFF6FF',
+    borderColor: '#BFDBFE',
+  },
+  genderCardGirlActive: {
     backgroundColor: '#DB2777',
-    borderWidth: 1.5,
     borderColor: '#BE185D',
     ...SHADOWS.button,
   },
+  genderCardGirlInactive: {
+    backgroundColor: '#FDF2F8',
+    borderColor: '#FBCFE8',
+  },
   genderText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '800',
   },
   genderTextActive: {
@@ -488,8 +493,10 @@ const styles = StyleSheet.create({
   agePillBadge: {
     backgroundColor: '#F1F5F9',
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 3,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   agePillText: {
     fontSize: 11,
@@ -511,7 +518,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
-    shadowRadius: 3,
+    shadowRadius: 4,
     elevation: 3,
   },
   stepperBtnDisabled: {
@@ -525,8 +532,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     backgroundColor: '#F8FAFC',
     borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: '#CBD5E1',
+    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -559,12 +565,16 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
     marginRight: 6,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
   },
-  quickChipBoy: {
+  quickChipBoyActive: {
     backgroundColor: '#DBEAFE',
+    borderColor: '#2563EB',
   },
-  quickChipGirl: {
+  quickChipGirlActive: {
     backgroundColor: '#FCE7F3',
+    borderColor: '#DB2777',
   },
   quickChipText: {
     fontSize: 11,
@@ -576,9 +586,11 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   posBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 6,
+    borderRadius: 8,
   },
   posBadgeLie: {
     backgroundColor: '#E0F2FE',
@@ -594,10 +606,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
-    borderWidth: 1.5,
+    borderWidth: 2,
     borderColor: '#CBD5E1',
     borderRadius: 14,
-    paddingHorizontal: 14,
+    paddingHorizontal: 12,
     height: 52,
   },
   measurementBoxError: {
@@ -607,30 +619,23 @@ const styles = StyleSheet.create({
   rulerIcon: {
     fontSize: 20,
     marginRight: 10,
-    flexShrink: 0,
   },
   lengthInputField: {
     flex: 1,
-    minWidth: 0,
     fontSize: 20,
     fontWeight: '900',
     color: '#0F172A',
-    paddingVertical: 0,
   },
-  unitBadge: {
-    backgroundColor: '#E0F2FE',
+  unitChip: {
+    backgroundColor: '#E2E8F0',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#BAE6FD',
-    flexShrink: 0,
-    marginLeft: 8,
   },
-  unitBadgeText: {
+  unitChipText: {
     fontSize: 13,
-    fontWeight: '800',
-    color: '#0369A1',
+    fontWeight: '900',
+    color: '#1E293B',
   },
   errorBanner: {
     fontSize: 11,
@@ -649,31 +654,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14,
-    paddingHorizontal: 16,
     borderRadius: 16,
     marginTop: 10,
-    width: '100%',
     ...SHADOWS.button,
   },
   ctaButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '800',
-    letterSpacing: 0.2,
+    fontSize: 15,
+    fontWeight: '900',
+    letterSpacing: 0.3,
   },
   resultSection: {
     marginTop: 14,
     width: '100%',
   },
   resultCard: {
-    paddingTop: 24,
-    paddingBottom: 20,
-    paddingHorizontal: 16,
+    padding: 16,
     borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
-    position: 'relative',
-    ...SHADOWS.cardFloating,
   },
   resultTitleBanner: {
     flexDirection: 'row',
