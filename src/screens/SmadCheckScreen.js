@@ -7,10 +7,10 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Feather, FontAwesome6 } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import ScreenContainer from '../components/common/ScreenContainer';
 import RibbonHeader from '../components/custom/RibbonHeader';
-import StickyCard from '../components/custom/StickyCard';
+import WashiTape from '../components/custom/WashiTape';
 import StepperCounter from '../components/custom/StepperCounter';
 import { FOOD_GROUPS } from '../data/foodGroups';
 import { evaluateSMAD } from '../services/smadService';
@@ -116,55 +116,45 @@ export default function SmadCheckScreen({ navigation }) {
       {/* Intro Note */}
       <View style={styles.introCard}>
         <View style={styles.infoIconWrapper}>
-          <Feather name="info" size={18} color="#0284C7" />
+          <Feather name="info" size={16} color="#0284C7" />
         </View>
         <Text style={styles.introText}>
           Yuk periksa apakah makanan si kecil dalam <Text style={styles.boldText}>24 jam terakhir</Text> sudah memenuhi standar <Text style={styles.boldText}>Minimum Acceptable Diet (MAD)</Text> WHO!
         </Text>
       </View>
 
-      {/* UNIFIED SINGLE FORM CARD */}
-      <StickyCard
-        backgroundColor="#FFFFFF"
-        showLines={false}
-        hasTapes={true}
-        tapeColor={COLORS.washiTape}
-        tapePositions={['top-left', 'top-right']}
-        style={styles.formCard}
-      >
+      {/* Single Clean Form Panel with Washi Tapes */}
+      <View style={styles.formPanel}>
+        <WashiTape position="top-left" color={COLORS.washiTape} />
+        <WashiTape position="top-right" color={COLORS.washiTape} />
+
         {/* PERTANYAAN 1: USIA ANAK */}
         <View style={styles.questionSection}>
-          <Text style={styles.questionTitle}>1. Usia Anak Saat Ini:</Text>
-          <View style={styles.toggleRow}>
+          <Text style={styles.questionTitle}>1. Usia Anak Saat Ini</Text>
+          <View style={styles.segmentedContainer}>
             <TouchableOpacity
               onPress={() => setAgeGroup('6-8')}
               style={[
-                styles.toggleBtn,
-                ageGroup === '6-8' ? styles.toggleBtnActive : styles.toggleBtnInactive,
+                styles.segmentedTab,
+                ageGroup === '6-8' && styles.segmentedTabActive,
               ]}
               activeOpacity={0.8}
             >
-              <Text style={[styles.toggleBtnText, ageGroup === '6-8' && styles.toggleBtnTextActive]}>
+              <Text style={[styles.segmentedText, ageGroup === '6-8' && styles.segmentedTextActive]}>
                 6 – 8 Bulan
-              </Text>
-              <Text style={[styles.toggleBtnSub, ageGroup === '6-8' && styles.toggleBtnSubActive]}>
-                MP-ASI Awal
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => setAgeGroup('9-23')}
               style={[
-                styles.toggleBtn,
-                ageGroup === '9-23' ? styles.toggleBtnActive : styles.toggleBtnInactive,
+                styles.segmentedTab,
+                ageGroup === '9-23' && styles.segmentedTabActive,
               ]}
               activeOpacity={0.8}
             >
-              <Text style={[styles.toggleBtnText, ageGroup === '9-23' && styles.toggleBtnTextActive]}>
+              <Text style={[styles.segmentedText, ageGroup === '9-23' && styles.segmentedTextActive]}>
                 9 – 23 Bulan
-              </Text>
-              <Text style={[styles.toggleBtnSub, ageGroup === '9-23' && styles.toggleBtnSubActive]}>
-                MP-ASI Lanjutan
               </Text>
             </TouchableOpacity>
           </View>
@@ -173,36 +163,30 @@ export default function SmadCheckScreen({ navigation }) {
         {/* PERTANYAAN 2: STATUS MENYUSU */}
         <View style={styles.questionSection}>
           <Text style={styles.questionTitle}>2. Apakah Anak Masih Menyusu ASI?</Text>
-          <View style={styles.toggleRow}>
+          <View style={styles.segmentedContainer}>
             <TouchableOpacity
               onPress={() => setIsBreastfeeding(true)}
               style={[
-                styles.toggleBtn,
-                isBreastfeeding ? styles.toggleBtnActive : styles.toggleBtnInactive,
+                styles.segmentedTab,
+                isBreastfeeding && styles.segmentedTabActive,
               ]}
               activeOpacity={0.8}
             >
-              <Text style={[styles.toggleBtnText, isBreastfeeding && styles.toggleBtnTextActive]}>
+              <Text style={[styles.segmentedText, isBreastfeeding && styles.segmentedTextActive]}>
                 Ya, Masih ASI 🤱
-              </Text>
-              <Text style={[styles.toggleBtnSub, isBreastfeeding && styles.toggleBtnSubActive]}>
-                Otomatis +1 Kelompok
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => setIsBreastfeeding(false)}
               style={[
-                styles.toggleBtn,
-                !isBreastfeeding ? styles.toggleBtnDangerActive : styles.toggleBtnInactive,
+                styles.segmentedTab,
+                !isBreastfeeding && styles.segmentedTabDangerActive,
               ]}
               activeOpacity={0.8}
             >
-              <Text style={[styles.toggleBtnText, !isBreastfeeding && styles.toggleBtnTextActive]}>
+              <Text style={[styles.segmentedText, !isBreastfeeding && styles.segmentedTextActive]}>
                 Tidak Menyusu 🍼
-              </Text>
-              <Text style={[styles.toggleBtnSub, !isBreastfeeding && styles.toggleBtnSubActive]}>
-                Wajib Susu Min. 2x
               </Text>
             </TouchableOpacity>
           </View>
@@ -211,7 +195,7 @@ export default function SmadCheckScreen({ navigation }) {
         {/* PERTANYAAN 3: 8 KELOMPOK MAKANAN */}
         <View style={styles.questionSection}>
           <View style={styles.sectionHeaderRow}>
-            <Text style={styles.questionTitle}>3. Makanan yang Dikonsumsi (24 Jam Terakhir):</Text>
+            <Text style={styles.questionTitle}>3. Makanan yang Dikonsumsi (24 Jam Terakhir)</Text>
           </View>
           <Text style={styles.questionSubtitle}>
             Centang semua kelompok makanan yang dimakan si kecil kemarin:
@@ -238,7 +222,7 @@ export default function SmadCheckScreen({ navigation }) {
             </View>
           </View>
 
-          {/* List of 8 Food Groups */}
+          {/* List of 8 Food Groups (Clean Flat Rows) */}
           <View style={styles.foodList}>
             {FOOD_GROUPS.map((food) => {
               const isAsi = food.id === 'breastmilk';
@@ -249,13 +233,13 @@ export default function SmadCheckScreen({ navigation }) {
                   key={food.id}
                   onPress={() => toggleFoodGroup(food.id)}
                   style={[
-                    styles.foodItemCard,
-                    isSelected ? styles.foodItemActive : styles.foodItemInactive,
+                    styles.foodRow,
+                    isSelected ? styles.foodRowActive : styles.foodRowInactive,
                   ]}
                   activeOpacity={0.7}
                 >
                   <View style={[styles.checkCircle, isSelected && styles.checkCircleActive]}>
-                    {isSelected && <Feather name="check" size={14} color="#FFFFFF" />}
+                    {isSelected && <Feather name="check" size={13} color="#FFFFFF" />}
                   </View>
 
                   <View style={styles.foodContent}>
@@ -287,7 +271,7 @@ export default function SmadCheckScreen({ navigation }) {
         {/* PERTANYAAN 4: FREKUENSI MAKAN UTAMA */}
         <View style={styles.questionSection}>
           <View style={styles.sectionHeaderRow}>
-            <Text style={styles.questionTitle}>4. Frekuensi Makan Makanan Padat/Lunak:</Text>
+            <Text style={styles.questionTitle}>4. Frekuensi Makan Makanan Padat / Lunak</Text>
             <View style={styles.targetBadge}>
               <Text style={styles.targetBadgeText}>Target: min. {targetMmf}x</Text>
             </View>
@@ -309,7 +293,7 @@ export default function SmadCheckScreen({ navigation }) {
         {!isBreastfeeding && (
           <View style={styles.questionSection}>
             <View style={styles.sectionHeaderRow}>
-              <Text style={styles.questionTitle}>5. Frekuensi Konsumsi Susu / Olahan Susu:</Text>
+              <Text style={styles.questionTitle}>5. Frekuensi Konsumsi Susu / Olahan Susu</Text>
               <View style={[styles.targetBadge, { backgroundColor: '#FEF3C7' }]}>
                 <Text style={[styles.targetBadgeText, { color: '#B45309' }]}>Target: min. 2x</Text>
               </View>
@@ -337,24 +321,20 @@ export default function SmadCheckScreen({ navigation }) {
           <Feather name="check-circle" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
           <Text style={styles.evaluateBtnText}>Evaluasi Gizi SMAD</Text>
         </TouchableOpacity>
-      </StickyCard>
+      </View>
 
       {/* RESULT SECTION */}
       {result && (
         <View style={styles.resultSectionWrapper}>
-          <StickyCard
-            backgroundColor={result.statusBg}
-            showLines={false}
-            hasTapes={true}
-            tapeColor={result.isMadPass ? COLORS.washiTape : '#EF4444'}
-            tapePositions={['top-left', 'top-right']}
-            style={styles.resultCard}
-          >
+          <View style={[styles.resultCard, { backgroundColor: result.statusBg }]}>
+            <WashiTape position="top-left" color={result.isMadPass ? COLORS.washiTape : '#EF4444'} />
+            <WashiTape position="top-right" color={result.isMadPass ? COLORS.washiTape : '#EF4444'} />
+
             {/* Status Title Banner */}
             <View style={[styles.resultBanner, { backgroundColor: result.statusColor }]}>
               <Feather
                 name={result.isMadPass ? 'check-circle' : 'alert-triangle'}
-                size={24}
+                size={22}
                 color="#FFFFFF"
                 style={{ marginRight: 8 }}
               />
@@ -419,9 +399,9 @@ export default function SmadCheckScreen({ navigation }) {
               activeOpacity={0.8}
             >
               <Feather name="refresh-cw" size={16} color="#475569" style={{ marginRight: 6 }} />
-              <Text style={styles.resetButtonText}>Hitung Ulang Menu Lainnya</Text>
+              <Text style={styles.resetButtonText}>Hitung Ulang Menu Lain</Text>
             </TouchableOpacity>
-          </StickyCard>
+          </View>
         </View>
       )}
 
@@ -436,16 +416,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     padding: 12,
-    borderRadius: 16,
+    borderRadius: 14,
     marginBottom: 12,
     borderWidth: 1.5,
     borderColor: '#C6E3F4',
     ...SHADOWS.cardFloating,
   },
   infoIconWrapper: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: '#E0F2FE',
     alignItems: 'center',
     justifyContent: 'center',
@@ -461,32 +441,71 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#0F172A',
   },
-  formCard: {
+  formPanel: {
     width: '100%',
-    padding: 18,
-    borderRadius: 20,
     backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 18,
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
     ...SHADOWS.cardFloating,
   },
   questionSection: {
-    marginBottom: 18,
+    marginBottom: 16,
     paddingBottom: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
   },
   questionTitle: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '800',
     color: '#0F172A',
     marginBottom: 6,
   },
   questionSubtitle: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#64748B',
-    marginBottom: 10,
-    lineHeight: 16,
+    marginBottom: 8,
+    lineHeight: 15,
+  },
+  segmentedContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#F1F5F9',
+    borderRadius: 14,
+    padding: 4,
+    marginTop: 2,
+  },
+  segmentedTab: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    borderRadius: 11,
+  },
+  segmentedTabActive: {
+    backgroundColor: '#0284C7',
+    shadowColor: '#0284C7',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  segmentedTabDangerActive: {
+    backgroundColor: '#EF4444',
+    shadowColor: '#EF4444',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  segmentedText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#64748B',
+  },
+  segmentedTextActive: {
+    color: '#FFFFFF',
+    fontWeight: '800',
   },
   sectionHeaderRow: {
     flexDirection: 'row',
@@ -494,6 +513,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 4,
     flexWrap: 'wrap',
+    gap: 4,
   },
   targetBadge: {
     backgroundColor: '#E0F2FE',
@@ -502,59 +522,15 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   targetBadgeText: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '800',
     color: '#0369A1',
-  },
-  toggleRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 4,
-  },
-  toggleBtn: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRadius: 14,
-    alignItems: 'center',
-    borderWidth: 1.5,
-  },
-  toggleBtnInactive: {
-    backgroundColor: '#F8FAFC',
-    borderColor: '#CBD5E1',
-  },
-  toggleBtnActive: {
-    backgroundColor: '#0284C7',
-    borderColor: '#0369A1',
-    ...SHADOWS.button,
-  },
-  toggleBtnDangerActive: {
-    backgroundColor: '#EF4444',
-    borderColor: '#DC2626',
-    ...SHADOWS.button,
-  },
-  toggleBtnText: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#1E293B',
-  },
-  toggleBtnTextActive: {
-    color: '#FFFFFF',
-  },
-  toggleBtnSub: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#64748B',
-    marginTop: 2,
-  },
-  toggleBtnSubActive: {
-    color: '#E0F2FE',
   },
   progressCard: {
     backgroundColor: '#F0F9FF',
     padding: 10,
-    borderRadius: 12,
-    marginBottom: 10,
+    borderRadius: 10,
+    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#BAE6FD',
   },
@@ -574,39 +550,40 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   progressBarTrack: {
-    height: 8,
+    height: 6,
     backgroundColor: '#E2E8F0',
-    borderRadius: 4,
+    borderRadius: 3,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    borderRadius: 4,
+    borderRadius: 3,
   },
   foodList: {
     marginTop: 4,
   },
-  foodItemCard: {
+  foodRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    borderRadius: 12,
-    marginBottom: 8,
-    borderWidth: 1.5,
+    paddingVertical: 9,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginBottom: 6,
+    borderWidth: 1,
   },
-  foodItemInactive: {
+  foodRowInactive: {
     backgroundColor: '#F8FAFC',
-    borderColor: '#E2E8F0',
+    borderColor: '#F1F5F9',
   },
-  foodItemActive: {
+  foodRowActive: {
     backgroundColor: '#F0FDF4',
-    borderColor: '#86EFAC',
+    borderColor: '#BBF7D0',
   },
   checkCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
     borderColor: '#94A3B8',
     alignItems: 'center',
     justifyContent: 'center',
@@ -624,7 +601,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   foodGroupBadge: {
     fontSize: 10,
@@ -680,6 +657,9 @@ const styles = StyleSheet.create({
   resultCard: {
     padding: 16,
     borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    ...SHADOWS.cardFloating,
   },
   resultBanner: {
     flexDirection: 'row',
@@ -759,7 +739,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#E2E8F0',
-    paddingVertical: 12,
+    paddingVertical: 11,
     borderRadius: 12,
     marginTop: 12,
   },

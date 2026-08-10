@@ -8,10 +8,10 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import { Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome6 } from '@expo/vector-icons';
 import ScreenContainer from '../components/common/ScreenContainer';
 import RibbonHeader from '../components/custom/RibbonHeader';
-import StickyCard from '../components/custom/StickyCard';
+import WashiTape from '../components/custom/WashiTape';
 import ZScoreGauge from '../components/custom/ZScoreGauge';
 import { calculateStuntingZScore } from '../services/stuntingService';
 import { StorageService } from '../services/storageService';
@@ -81,7 +81,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
     }
   };
 
-  // Jika hasil sudah pernah dihitung dan user mengubah umur/gender, perbarui otomatis jika input valid
+  // Auto-update jika hasil sudah terbuka dan user mengganti umur/gender
   useEffect(() => {
     if (result) {
       const res = executeCalculation(lengthInput, ageMonths, gender);
@@ -109,20 +109,16 @@ export default function StuntingCalculatorScreen({ navigation }) {
         onBack={() => navigation.goBack()}
       />
 
-      {/* Main Input Form Card */}
-      <StickyCard
-        backgroundColor="#FFFFFF"
-        showLines={false}
-        hasTapes={true}
-        tapeColor={COLORS.washiTape}
-        tapePositions={['top-left', 'top-right']}
-        style={styles.formCard}
-      >
+      {/* Clean Single White Form Panel with Corner Washi Tapes */}
+      <View style={styles.formPanel}>
+        <WashiTape position="top-left" color={COLORS.washiTape} />
+        <WashiTape position="top-right" color={COLORS.washiTape} />
+
         {/* Field 1: Nama Anak */}
-        <View style={styles.formGroup}>
-          <Text style={styles.fieldLabel}>Nama Panggilan Anak (Opsional):</Text>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputEmoji}>👶</Text>
+        <View style={styles.fieldSection}>
+          <Text style={styles.fieldLabel}>Nama Panggilan Anak (Opsional)</Text>
+          <View style={styles.inputPill}>
+            <Text style={styles.inputIcon}>👶</Text>
             <TextInput
               value={childName}
               onChangeText={setChildName}
@@ -133,28 +129,28 @@ export default function StuntingCalculatorScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Field 2: Jenis Kelamin */}
-        <View style={styles.formGroup}>
-          <Text style={styles.fieldLabel}>Jenis Kelamin Anak:</Text>
-          <View style={styles.genderRow}>
+        {/* Field 2: Jenis Kelamin (Sleek Segmented Switch) */}
+        <View style={styles.fieldSection}>
+          <Text style={styles.fieldLabel}>Jenis Kelamin Anak</Text>
+          <View style={styles.segmentedContainer}>
             <TouchableOpacity
               onPress={() => setGender('boy')}
               style={[
-                styles.genderCard,
-                gender === 'boy' ? styles.genderCardBoyActive : styles.genderCardBoyInactive,
+                styles.segmentedTab,
+                gender === 'boy' && styles.segmentedTabBoyActive,
               ]}
               activeOpacity={0.8}
             >
               <FontAwesome6
                 name="mars"
-                size={18}
-                color={gender === 'boy' ? '#FFFFFF' : '#2563EB'}
-                style={{ marginRight: 8 }}
+                size={16}
+                color={gender === 'boy' ? '#FFFFFF' : '#64748B'}
+                style={{ marginRight: 6 }}
               />
               <Text
                 style={[
-                  styles.genderText,
-                  gender === 'boy' ? styles.genderTextActive : { color: '#1E3A8A' },
+                  styles.segmentedText,
+                  gender === 'boy' && styles.segmentedTextActive,
                 ]}
               >
                 Laki-laki 👦
@@ -164,21 +160,21 @@ export default function StuntingCalculatorScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => setGender('girl')}
               style={[
-                styles.genderCard,
-                gender === 'girl' ? styles.genderCardGirlActive : styles.genderCardGirlInactive,
+                styles.segmentedTab,
+                gender === 'girl' && styles.segmentedTabGirlActive,
               ]}
               activeOpacity={0.8}
             >
               <FontAwesome6
                 name="venus"
-                size={18}
-                color={gender === 'girl' ? '#FFFFFF' : '#DB2777'}
-                style={{ marginRight: 8 }}
+                size={16}
+                color={gender === 'girl' ? '#FFFFFF' : '#64748B'}
+                style={{ marginRight: 6 }}
               />
               <Text
                 style={[
-                  styles.genderText,
-                  gender === 'girl' ? styles.genderTextActive : { color: '#831843' },
+                  styles.segmentedText,
+                  gender === 'girl' && styles.segmentedTextActive,
                 ]}
               >
                 Perempuan 👧
@@ -187,10 +183,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Field 3: Umur Anak Stepper */}
-        <View style={styles.formGroup}>
+        {/* Field 3: Umur Anak Stepper & Quick Pills */}
+        <View style={styles.fieldSection}>
           <View style={styles.labelWithBadgeRow}>
-            <Text style={styles.fieldLabel}>Umur Anak Saat Ini:</Text>
+            <Text style={styles.fieldLabel}>Umur Anak</Text>
             <View style={styles.agePillBadge}>
               <Text style={styles.agePillText}>
                 {ageMonths < 12
@@ -200,99 +196,90 @@ export default function StuntingCalculatorScreen({ navigation }) {
             </View>
           </View>
 
-          {/* Large Stepper Counter */}
-          <View style={styles.stepperContainer}>
+          {/* Stepper Bar */}
+          <View style={styles.stepperRow}>
             <TouchableOpacity
               onPress={() => setAgeMonths(Math.max(0, ageMonths - 1))}
               disabled={ageMonths <= 0}
               style={[
-                styles.stepperBtn,
+                styles.stepperButton,
                 { backgroundColor: gender === 'boy' ? '#2563EB' : '#DB2777' },
-                ageMonths <= 0 && styles.stepperBtnDisabled,
+                ageMonths <= 0 && styles.stepperButtonDisabled,
               ]}
               activeOpacity={0.7}
             >
-              <Feather name="minus" size={22} color="#FFFFFF" />
+              <Feather name="minus" size={20} color="#FFFFFF" />
             </TouchableOpacity>
 
-            <View style={[styles.stepperDisplay, { borderColor: gender === 'boy' ? '#93C5FD' : '#F9A8D4' }]}>
-              <Text style={[styles.stepperNumber, { color: gender === 'boy' ? '#1E40AF' : '#9D174D' }]}>
+            <View style={styles.stepperValueContainer}>
+              <Text style={[styles.stepperValueText, { color: gender === 'boy' ? '#1E40AF' : '#9D174D' }]}>
                 {ageMonths}
               </Text>
-              <Text style={styles.stepperUnit}>Bulan</Text>
+              <Text style={styles.stepperUnitText}>Bulan</Text>
             </View>
 
             <TouchableOpacity
               onPress={() => setAgeMonths(Math.min(60, ageMonths + 1))}
               disabled={ageMonths >= 60}
               style={[
-                styles.stepperBtn,
+                styles.stepperButton,
                 { backgroundColor: gender === 'boy' ? '#2563EB' : '#DB2777' },
-                ageMonths >= 60 && styles.stepperBtnDisabled,
+                ageMonths >= 60 && styles.stepperButtonDisabled,
               ]}
               activeOpacity={0.7}
             >
-              <Feather name="plus" size={22} color="#FFFFFF" />
+              <Feather name="plus" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
 
           {/* Quick Age Shortcuts */}
-          <View style={styles.quickAgeWrapper}>
-            <Text style={styles.quickAgeTitle}>Pilihan Cepat:</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.quickAgeScroll}
-            >
-              {[0, 3, 6, 9, 12, 18, 24, 36, 48, 60].map((m) => {
-                const isSelected = ageMonths === m;
-                return (
-                  <TouchableOpacity
-                    key={m}
-                    onPress={() => setAgeMonths(m)}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.quickAgeScroll}
+          >
+            {[0, 3, 6, 9, 12, 18, 24, 36, 48, 60].map((m) => {
+              const isSelected = ageMonths === m;
+              return (
+                <TouchableOpacity
+                  key={m}
+                  onPress={() => setAgeMonths(m)}
+                  style={[
+                    styles.quickChip,
+                    isSelected && (gender === 'boy' ? styles.quickChipBoy : styles.quickChipGirl),
+                  ]}
+                  activeOpacity={0.7}
+                >
+                  <Text
                     style={[
-                      styles.quickChip,
-                      isSelected && (gender === 'boy' ? styles.quickChipBoyActive : styles.quickChipGirlActive),
+                      styles.quickChipText,
+                      isSelected && styles.quickChipTextActive,
                     ]}
-                    activeOpacity={0.7}
                   >
-                    <Text
-                      style={[
-                        styles.quickChipText,
-                        isSelected && styles.quickChipTextActive,
-                      ]}
-                    >
-                      {m === 0 ? '0 (Lahir)' : `${m} bln`}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
+                    {m === 0 ? '0 (Lahir)' : `${m} bln`}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
         </View>
 
         {/* Field 4: Panjang / Tinggi Badan */}
-        <View style={styles.formGroup}>
+        <View style={styles.fieldSection}>
           <View style={styles.labelWithBadgeRow}>
             <Text style={styles.fieldLabel}>
-              {isUnder24 ? 'Panjang Badan (PB):' : 'Tinggi Badan (TB):'}
+              {isUnder24 ? 'Panjang Badan (PB)' : 'Tinggi Badan (TB)'}
             </Text>
             <View style={[styles.posBadge, isUnder24 ? styles.posBadgeLie : styles.posBadgeStand]}>
-              <Feather
-                name={isUnder24 ? 'moon' : 'user'}
-                size={12}
-                color={isUnder24 ? '#0284C7' : '#16A34A'}
-                style={{ marginRight: 4 }}
-              />
               <Text style={[styles.posBadgeText, { color: isUnder24 ? '#0369A1' : '#15803D' }]}>
-                {isUnder24 ? 'Posisi Terlentang (Tidur)' : 'Posisi Berdiri Tegak'}
+                {isUnder24 ? '🟢 Posisi Terlentang (Tidur)' : '🔵 Posisi Berdiri Tegak'}
               </Text>
             </View>
           </View>
 
-          {/* Measurement Input Box */}
+          {/* Unified Measurement Box */}
           <View style={[styles.measurementBox, errorMessage ? styles.measurementBoxError : null]}>
-            <Text style={styles.rulerIcon}>📏</Text>
+            <Text style={styles.rulerEmoji}>📏</Text>
             <TextInput
               value={lengthInput}
               onChangeText={(val) => {
@@ -314,11 +301,11 @@ export default function StuntingCalculatorScreen({ navigation }) {
           ) : null}
 
           <Text style={styles.guidelineNote}>
-            ℹ️ Sesuai standar Kemenkes/WHO: Balita &lt; 24 bulan diukur panjang badan posisi tidur, dan &ge; 24 bulan diukur tinggi badan posisi berdiri tegak.
+            ℹ️ Standar WHO: Balita &lt; 24 bulan diukur panjang badan (posisi tidur), dan &ge; 24 bulan diukur tinggi badan (posisi berdiri).
           </Text>
         </View>
 
-        {/* CTA Calculate Button */}
+        {/* CTA Button */}
         <TouchableOpacity
           onPress={handleCalculate}
           style={[
@@ -330,19 +317,15 @@ export default function StuntingCalculatorScreen({ navigation }) {
           <Feather name="activity" size={18} color="#FFFFFF" style={{ marginRight: 8 }} />
           <Text style={styles.ctaButtonText}>Hitung Status Stunting</Text>
         </TouchableOpacity>
-      </StickyCard>
+      </View>
 
-      {/* RESULT DASHBOARD SECTION */}
+      {/* RESULT SECTION */}
       {result && (
         <View style={styles.resultSection}>
-          <StickyCard
-            backgroundColor={result.statusBg}
-            showLines={false}
-            hasTapes={true}
-            tapeColor={result.isStunting ? '#EF4444' : COLORS.washiTape}
-            tapePositions={['top-left', 'top-right']}
-            style={styles.resultCard}
-          >
+          <View style={[styles.resultCard, { backgroundColor: result.statusBg }]}>
+            <WashiTape position="top-left" color={result.isStunting ? '#EF4444' : COLORS.washiTape} />
+            <WashiTape position="top-right" color={result.isStunting ? '#EF4444' : COLORS.washiTape} />
+
             {/* Status Title Banner */}
             <View style={[styles.resultTitleBanner, { backgroundColor: result.statusColor }]}>
               <Feather
@@ -354,7 +337,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               <Text style={styles.resultTitleBannerText}>{result.title}</Text>
             </View>
 
-            {/* Metric Summary Dashboard */}
+            {/* Metric Summary Card */}
             <View style={styles.metricCard}>
               <Text style={styles.metricLabel}>Nilai Z-Score Pertumbuhan WHO</Text>
               <Text style={[styles.metricNumber, { color: result.statusColor }]}>
@@ -374,10 +357,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
               </View>
             </View>
 
-            {/* Visual WHO Gauge Curve */}
+            {/* Visual WHO Curve Gauge */}
             <ZScoreGauge zScore={result.zScore} statusColor={result.statusColor} />
 
-            {/* Detailed Recommendations */}
+            {/* Recommendations */}
             <View style={styles.recommendationCard}>
               <Text style={styles.recHeaderTitle}>💡 Rekomendasi & Tindak Lanjut:</Text>
               {result.recommendations.map((item, idx) => (
@@ -395,9 +378,9 @@ export default function StuntingCalculatorScreen({ navigation }) {
               activeOpacity={0.8}
             >
               <Feather name="refresh-cw" size={16} color="#475569" style={{ marginRight: 6 }} />
-              <Text style={styles.resetButtonText}>Hitung Balita Lainnya</Text>
+              <Text style={styles.resetButtonText}>Hitung Balita Lain</Text>
             </TouchableOpacity>
-          </StickyCard>
+          </View>
         </View>
       )}
 
@@ -407,16 +390,16 @@ export default function StuntingCalculatorScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  formCard: {
+  formPanel: {
     width: '100%',
-    padding: 18,
-    borderRadius: 20,
     backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 18,
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
     ...SHADOWS.cardFloating,
   },
-  formGroup: {
+  fieldSection: {
     marginBottom: 16,
   },
   fieldLabel: {
@@ -431,8 +414,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 6,
     flexWrap: 'wrap',
+    gap: 4,
   },
-  inputContainer: {
+  inputPill: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
@@ -442,7 +426,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 48,
   },
-  inputEmoji: {
+  inputIcon: {
     fontSize: 18,
     marginRight: 8,
   },
@@ -452,112 +436,103 @@ const styles = StyleSheet.create({
     color: '#0F172A',
     fontWeight: '600',
   },
-  genderRow: {
+  segmentedContainer: {
     flexDirection: 'row',
-    gap: 8,
+    backgroundColor: '#F1F5F9',
+    borderRadius: 14,
+    padding: 4,
   },
-  genderCard: {
+  segmentedTab: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    borderRadius: 14,
-    borderWidth: 1.5,
+    paddingVertical: 10,
+    borderRadius: 11,
   },
-  genderCardBoyActive: {
+  segmentedTabBoyActive: {
     backgroundColor: '#2563EB',
-    borderColor: '#1D4ED8',
-    ...SHADOWS.button,
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  genderCardBoyInactive: {
-    backgroundColor: '#EFF6FF',
-    borderColor: '#BFDBFE',
-  },
-  genderCardGirlActive: {
+  segmentedTabGirlActive: {
     backgroundColor: '#DB2777',
-    borderColor: '#BE185D',
-    ...SHADOWS.button,
+    shadowColor: '#DB2777',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  genderCardGirlInactive: {
-    backgroundColor: '#FDF2F8',
-    borderColor: '#FBCFE8',
-  },
-  genderText: {
+  segmentedText: {
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '700',
+    color: '#64748B',
   },
-  genderTextActive: {
+  segmentedTextActive: {
     color: '#FFFFFF',
+    fontWeight: '800',
   },
   agePillBadge: {
     backgroundColor: '#F1F5F9',
     paddingHorizontal: 10,
     paddingVertical: 3,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
   },
   agePillText: {
     fontSize: 11,
     fontWeight: '800',
     color: '#475569',
   },
-  stepperContainer: {
+  stepperRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 4,
   },
-  stepperBtn: {
-    width: 48,
-    height: 48,
+  stepperButton: {
+    width: 46,
+    height: 46,
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 3,
+    elevation: 2,
   },
-  stepperBtnDisabled: {
+  stepperButtonDisabled: {
     backgroundColor: '#CBD5E1',
     elevation: 0,
   },
-  stepperDisplay: {
+  stepperValueContainer: {
     flex: 1,
     maxWidth: 160,
-    height: 48,
+    height: 46,
     marginHorizontal: 12,
     backgroundColor: '#F8FAFC',
     borderRadius: 14,
-    borderWidth: 2,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  stepperNumber: {
+  stepperValueText: {
     fontSize: 22,
     fontWeight: '900',
     marginRight: 4,
   },
-  stepperUnit: {
+  stepperUnitText: {
     fontSize: 13,
     fontWeight: '700',
     color: '#64748B',
   },
-  quickAgeWrapper: {
-    marginTop: 10,
-  },
-  quickAgeTitle: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#64748B',
-    marginBottom: 6,
-  },
   quickAgeScroll: {
-    paddingVertical: 2,
+    paddingVertical: 8,
   },
   quickChip: {
     backgroundColor: '#F1F5F9',
@@ -565,16 +540,12 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
     marginRight: 6,
-    borderWidth: 1.5,
-    borderColor: '#E2E8F0',
   },
-  quickChipBoyActive: {
+  quickChipBoy: {
     backgroundColor: '#DBEAFE',
-    borderColor: '#2563EB',
   },
-  quickChipGirlActive: {
+  quickChipGirl: {
     backgroundColor: '#FCE7F3',
-    borderColor: '#DB2777',
   },
   quickChipText: {
     fontSize: 11,
@@ -586,11 +557,9 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   posBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 8,
+    borderRadius: 6,
   },
   posBadgeLie: {
     backgroundColor: '#E0F2FE',
@@ -606,47 +575,47 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: '#CBD5E1',
     borderRadius: 14,
     paddingHorizontal: 12,
-    height: 52,
+    height: 50,
   },
   measurementBoxError: {
     borderColor: '#EF4444',
     backgroundColor: '#FEF2F2',
   },
-  rulerIcon: {
-    fontSize: 20,
-    marginRight: 10,
+  rulerEmoji: {
+    fontSize: 18,
+    marginRight: 8,
   },
   lengthInputField: {
     flex: 1,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '900',
     color: '#0F172A',
   },
   unitChip: {
     backgroundColor: '#E2E8F0',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 6,
   },
   unitChipText: {
-    fontSize: 13,
-    fontWeight: '900',
+    fontSize: 12,
+    fontWeight: '800',
     color: '#1E293B',
   },
   errorBanner: {
     fontSize: 11,
     color: '#DC2626',
     fontWeight: '700',
-    marginTop: 6,
+    marginTop: 4,
   },
   guidelineNote: {
     fontSize: 10,
     color: '#64748B',
-    lineHeight: 15,
+    lineHeight: 14,
     marginTop: 6,
   },
   ctaButton: {
@@ -656,7 +625,7 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
     paddingHorizontal: 16,
     borderRadius: 14,
-    marginTop: 10,
+    marginTop: 6,
     width: '100%',
     ...SHADOWS.button,
   },
@@ -673,6 +642,9 @@ const styles = StyleSheet.create({
   resultCard: {
     padding: 16,
     borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    ...SHADOWS.cardFloating,
   },
   resultTitleBanner: {
     flexDirection: 'row',
@@ -692,7 +664,7 @@ const styles = StyleSheet.create({
   metricCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 14,
-    padding: 16,
+    padding: 14,
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
@@ -704,7 +676,7 @@ const styles = StyleSheet.create({
     color: '#64748B',
   },
   metricNumber: {
-    fontSize: 34,
+    fontSize: 32,
     fontWeight: '900',
     marginVertical: 4,
   },
@@ -714,7 +686,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1.5,
     marginTop: 2,
-    marginBottom: 8,
+    marginBottom: 6,
   },
   categoryBadgeText: {
     fontSize: 13,
@@ -724,7 +696,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 10,
+    borderRadius: 8,
     marginTop: 4,
     width: '100%',
     alignItems: 'center',
@@ -750,7 +722,7 @@ const styles = StyleSheet.create({
   recItemRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   bulletDot: {
     width: 6,
@@ -764,14 +736,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#334155',
     flex: 1,
-    lineHeight: 18,
+    lineHeight: 17,
   },
   resetButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#E2E8F0',
-    paddingVertical: 12,
+    paddingVertical: 11,
     borderRadius: 12,
     marginTop: 12,
   },
