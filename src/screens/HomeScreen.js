@@ -155,6 +155,9 @@ const styles = StyleSheet.create({
   cardTouchable: {
     width: '100%',
     aspectRatio: 440 / 410,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
