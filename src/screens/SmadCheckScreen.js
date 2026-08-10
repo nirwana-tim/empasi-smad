@@ -28,6 +28,9 @@ export default function SmadCheckScreen({ navigation }) {
   // Result State
   const [result, setResult] = useState(null);
 
+  // Total selected food groups including ASI
+  const totalFoodCount = selectedFoodIds.length + (isBreastfeeding ? 1 : 0);
+
   // Toggle Food Selection
   const toggleFoodGroup = (id) => {
     if (id === 'breastmilk') {
@@ -74,7 +77,7 @@ export default function SmadCheckScreen({ navigation }) {
   };
 
   return (
-    <ScreenContainer backgroundImage={require('../../Asset/bgsmad.png')}>
+    <ScreenContainer backgroundImage={require('../../Asset/defaultbg.png')}>
       {/* Header */}
       <RibbonHeader
         title="Cek SMAD"
@@ -86,7 +89,7 @@ export default function SmadCheckScreen({ navigation }) {
       <View style={styles.introCard}>
         <Feather name="info" size={18} color={COLORS.primaryDark} style={styles.infoIcon} />
         <Text style={styles.introText}>
-          Yuk periksa apakah pola makan si kecil dalam <Text style={styles.boldText}>24 jam terakhir</Text> sudah memenuhi standar <Text style={styles.boldText}>Minimum Acceptable Diet (MAD)</Text> WHO!
+          Yuk periksa apakah makanan si kecil dalam <Text style={styles.boldText}>24 jam terakhir</Text> sudah memenuhi standar <Text style={styles.boldText}>Minimum Acceptable Diet (MAD)</Text> WHO!
         </Text>
       </View>
 
@@ -148,7 +151,7 @@ export default function SmadCheckScreen({ navigation }) {
             activeOpacity={0.8}
           >
             <Text style={[styles.toggleBtnText, !isBreastfeeding && styles.toggleBtnTextActive]}>
-              Tidak
+              Tidak Menyusu ASI
             </Text>
           </TouchableOpacity>
         </View>
@@ -156,10 +159,33 @@ export default function SmadCheckScreen({ navigation }) {
 
       {/* QUESTION 3: 8 FOOD GROUPS CHECKLIST */}
       <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
-        <Text style={styles.questionTitle}>3. Makanan yang Dikonsumsi (24 Jam Terakhir):</Text>
+        <View style={styles.questionHeaderRow}>
+          <Text style={styles.questionTitle}>3. Makanan yang Dikonsumsi (24 Jam Terakhir):</Text>
+        </View>
         <Text style={styles.questionSubtitle}>
           Centang semua kelompok makanan yang dimakan si kecil kemarin:
         </Text>
+
+        {/* Real-time Progress Bar */}
+        <View style={styles.progressCard}>
+          <View style={styles.progressHeader}>
+            <Text style={styles.progressLabel}>Capaian Keragaman (MDD):</Text>
+            <Text style={[styles.progressScore, { color: totalFoodCount >= 5 ? COLORS.success : COLORS.warning }]}>
+              {totalFoodCount} dari 8 Kelompok {totalFoodCount >= 5 ? ' (Target Tercapai! 🎉)' : ' (Min. 5 kelompok)'}
+            </Text>
+          </View>
+          <View style={styles.progressBarTrack}>
+            <View
+              style={[
+                styles.progressBarFill,
+                {
+                  width: `${(totalFoodCount / 8) * 100}%`,
+                  backgroundColor: totalFoodCount >= 5 ? COLORS.success : COLORS.warning,
+                },
+              ]}
+            />
+          </View>
+        </View>
 
         <View style={styles.foodList}>
           {FOOD_GROUPS.map((food) => {
@@ -180,8 +206,10 @@ export default function SmadCheckScreen({ navigation }) {
 
                 <View style={styles.foodInfo}>
                   <View style={styles.foodHeaderRow}>
-                    <Text style={styles.foodGroupNumber}>Kel. {food.groupNumber}</Text>
-                    <Text style={styles.foodBadge}>{food.badge}</Text>
+                    <Text style={styles.foodGroupNumber}>Kelompok {food.groupNumber}</Text>
+                    <View style={styles.badgeWrapper}>
+                      <Text style={styles.foodBadge}>{food.badge}</Text>
+                    </View>
                   </View>
                   <Text style={[styles.foodName, isSelected && styles.foodNameActive]}>
                     {food.title}
@@ -194,20 +222,13 @@ export default function SmadCheckScreen({ navigation }) {
             );
           })}
         </View>
-
-        {/* Counter Selected Groups */}
-        <View style={styles.counterBanner}>
-          <Text style={styles.counterBannerText}>
-            Kelompok Terpilih: <Text style={styles.boldText}>{(selectedFoodIds.length + (isBreastfeeding ? 1 : 0))}</Text> / 8 Kelompok (Target WHO: min. 5)
-          </Text>
-        </View>
       </StickyCard>
 
       {/* QUESTION 4: MEAL FREQUENCY */}
       <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
         <Text style={styles.questionTitle}>4. Frekuensi Makan Makanan Padat / Lunak:</Text>
         <Text style={styles.questionSubtitle}>
-          Berapa kali si kecil makan makanan utama (padat/lumat/cincang) dalam 24 jam terakhir?
+          Berapa kali si kecil makan makanan utama (padat/lumat/cincang) kemarin?
         </Text>
         <StepperCounter
           value={mealFrequency}
@@ -224,7 +245,7 @@ export default function SmadCheckScreen({ navigation }) {
         <StickyCard backgroundColor="#FFFFFF" style={styles.sectionCard}>
           <Text style={styles.questionTitle}>5. Frekuensi Konsumsi Susu / Olahan Susu:</Text>
           <Text style={styles.questionSubtitle}>
-            Karena anak tidak menyusu ASI: berapa kali anak mendapat susu formula atau olahan susu? (Target WHO: min. 2 kali)
+            Karena tidak menyusu ASI: berapa kali si kecil mendapat susu formula atau olahan susu? (Target: min. 2 kali)
           </Text>
           <StepperCounter
             value={milkFrequency}
@@ -243,8 +264,8 @@ export default function SmadCheckScreen({ navigation }) {
         style={styles.evaluateButton}
         activeOpacity={0.8}
       >
-        <Feather name="check-circle" size={22} color="#FFFFFF" style={{ marginRight: 8 }} />
-        <Text style={styles.evaluateButtonText}>Periksa Hasil SMAD Sekarang</Text>
+        <Feather name="check-circle" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
+        <Text style={styles.evaluateButtonText}>Evaluasi Gizi (Cek MAD Sekarang)</Text>
       </TouchableOpacity>
 
       {/* RESULT SECTION */}
@@ -270,7 +291,7 @@ export default function SmadCheckScreen({ navigation }) {
 
             {/* Score Breakdown Table */}
             <View style={styles.breakdownBox}>
-              <Text style={styles.breakdownTitle}>Rincian Capaian Indikator:</Text>
+              <Text style={styles.breakdownTitle}>Rincian Capaian Indikator WHO:</Text>
 
               {/* MDD */}
               <View style={styles.breakdownRow}>
@@ -325,7 +346,7 @@ export default function SmadCheckScreen({ navigation }) {
 
             {/* Recommendations List */}
             <View style={styles.adviceBox}>
-              <Text style={styles.adviceTitle}>💡 Rekomendasi untuk Bunda:</Text>
+              <Text style={styles.adviceTitle}>💡 Rekomendasi Menu & Tindak Lanjut:</Text>
               {result.recommendations.map((rec, rIdx) => (
                 <View key={rIdx} style={styles.recItem}>
                   <Text style={styles.recText}>{rec.text}</Text>
@@ -358,12 +379,13 @@ const styles = StyleSheet.create({
   introCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E0F2FE',
+    backgroundColor: '#FFFFFF',
     padding: 12,
-    borderRadius: 12,
+    borderRadius: 14,
     marginBottom: 10,
-    borderWidth: 1,
-    borderColor: '#BAE6FD',
+    borderWidth: 1.5,
+    borderColor: '#C6E3F4',
+    ...SHADOWS.card,
   },
   infoIcon: {
     marginRight: 10,
@@ -382,7 +404,7 @@ const styles = StyleSheet.create({
     marginVertical: 6,
   },
   questionTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '800',
     color: COLORS.textTitle,
     marginBottom: 6,
@@ -400,10 +422,10 @@ const styles = StyleSheet.create({
   },
   toggleBtn: {
     flex: 1,
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#F8FAFC',
     paddingVertical: 12,
     paddingHorizontal: 8,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     marginHorizontal: 4,
     borderWidth: 1.5,
@@ -426,6 +448,39 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '800',
   },
+  progressCard: {
+    backgroundColor: '#F0F9FF',
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
+  },
+  progressHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+    flexWrap: 'wrap',
+  },
+  progressLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: COLORS.primaryDark,
+  },
+  progressScore: {
+    fontSize: 11,
+    fontWeight: '800',
+  },
+  progressBarTrack: {
+    height: 8,
+    backgroundColor: '#E2E8F0',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
   foodList: {
     marginTop: 4,
   },
@@ -434,9 +489,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F8FAFC',
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 8,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#E2E8F0',
   },
   foodCheckboxItemActive: {
@@ -464,6 +519,7 @@ const styles = StyleSheet.create({
   foodHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 2,
   },
   foodGroupNumber: {
@@ -471,34 +527,29 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: COLORS.primaryDark,
   },
+  badgeWrapper: {
+    backgroundColor: '#E2E8F0',
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 4,
+  },
   foodBadge: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: COLORS.textMuted,
+    fontSize: 9,
+    fontWeight: '700',
+    color: COLORS.textBody,
   },
   foodName: {
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
     color: COLORS.textTitle,
   },
   foodNameActive: {
-    color: '#1E4620',
+    color: '#15803D',
   },
   foodExamplesSmall: {
     fontSize: 11,
     color: COLORS.textMuted,
     marginTop: 1,
-  },
-  counterBanner: {
-    backgroundColor: '#EFF6FF',
-    padding: 10,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  counterBannerText: {
-    fontSize: 12,
-    color: COLORS.textBody,
   },
   evaluateButton: {
     backgroundColor: COLORS.primary,
@@ -506,16 +557,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     marginTop: 14,
     marginBottom: 10,
     ...SHADOWS.button,
   },
   evaluateButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '900',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
   },
   resultContainer: {
     marginTop: 12,
@@ -527,9 +578,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 14,
   },
   resultBadgeText: {
@@ -540,7 +591,7 @@ const styles = StyleSheet.create({
   },
   breakdownBox: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
@@ -556,14 +607,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 6,
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
   },
   indicatorLabel: {
     fontSize: 12,
     color: COLORS.textBody,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   indicatorValueRow: {
     flexDirection: 'row',
@@ -575,7 +626,7 @@ const styles = StyleSheet.create({
   },
   adviceBox: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 12,
     marginBottom: 12,
     borderWidth: 1,
@@ -585,7 +636,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '800',
     color: COLORS.textTitle,
-    marginBottom: 6,
+    marginBottom: 8,
   },
   recItem: {
     marginBottom: 8,
@@ -607,7 +658,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#E2E8F0',
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 10,
     marginTop: 4,
   },
   resetBtnText: {

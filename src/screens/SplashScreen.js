@@ -3,30 +3,32 @@ import {
   View,
   Text,
   StyleSheet,
-  ImageBackground,
   Image,
   Animated,
   TouchableOpacity,
+  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { COLORS } from '../constants/theme';
 
+const { width, height } = Dimensions.get('window');
+
 export default function SplashScreen({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const scaleAnim = useRef(new Animated.Value(0.95)).current;
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 800,
+        duration: 700,
         useNativeDriver: true,
       }),
       Animated.spring(scaleAnim, {
         toValue: 1,
-        friction: 5,
+        friction: 6,
         tension: 40,
         useNativeDriver: true,
       }),
@@ -34,7 +36,7 @@ export default function SplashScreen({ navigation }) {
 
     const timer = setTimeout(() => {
       navigation.replace('Home');
-    }, 2500);
+    }, 2800);
 
     return () => clearTimeout(timer);
   }, [navigation]);
@@ -44,59 +46,89 @@ export default function SplashScreen({ navigation }) {
   };
 
   return (
-    <ImageBackground
-      source={require('../../Asset/LoadingScreen.png')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <StatusBar style="dark" backgroundColor="transparent" translucent />
+    <View style={styles.container}>
+      <StatusBar style="dark" backgroundColor="#EDF9FE" translucent />
       <SafeAreaView style={styles.safeArea}>
         <TouchableOpacity
-          style={styles.container}
+          style={styles.touchArea}
           activeOpacity={1}
           onPress={handleSkip}
         >
-          {/* Subtle loading spinner at bottom */}
-          <View style={styles.bottomSection}>
+          {/* Main Illustration & Logo Graphics */}
+          <Animated.View
+            style={[
+              styles.imageContainer,
+              {
+                opacity: fadeAnim,
+                transform: [{ scale: scaleAnim }],
+              },
+            ]}
+          >
+            <Image
+              source={require('../../Asset/LoadingScreen.png')}
+              style={styles.splashImage}
+              resizeMode="contain"
+            />
+          </Animated.View>
+
+          {/* Minimalist Bottom Indicator */}
+          <View style={styles.loadingIndicatorContainer}>
             <ActivityIndicator size="small" color={COLORS.primary} />
-            <Text style={styles.tapToSkipText}>Ketuk layar untuk melanjutkan</Text>
+            <Text style={styles.loadingText}>Memuat Panduan MP-ASI...</Text>
           </View>
         </TouchableOpacity>
       </SafeAreaView>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
-    backgroundColor: COLORS.bgScreen,
+    backgroundColor: '#EDF9FE',
   },
   safeArea: {
     flex: 1,
   },
-  container: {
+  touchArea: {
     flex: 1,
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingBottom: 40,
-  },
-  bottomSection: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    paddingHorizontal: 20,
+    justifyContent: 'space-between',
     paddingVertical: 10,
-    borderRadius: 20,
+  },
+  imageContainer: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  splashImage: {
+    width: width,
+    height: height * 0.82,
+    maxHeight: 700,
+  },
+  loadingIndicatorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    borderRadius: 24,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#CBE5F5',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 2,
   },
-  tapToSkipText: {
+  loadingText: {
     fontSize: 12,
-    color: COLORS.textMuted,
-    marginTop: 6,
-    fontWeight: '600',
+    fontWeight: '700',
+    color: COLORS.textTitle,
+    marginLeft: 8,
   },
 });

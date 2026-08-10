@@ -42,7 +42,7 @@ export default function QuestionnaireScreen({ navigation }) {
   const posttest = QUESTIONNAIRE_LINKS.posttest;
 
   return (
-    <ScreenContainer backgroundImage={require('../../Asset/bgkuisiner.png')}>
+    <ScreenContainer backgroundImage={require('../../Asset/defaultbg.png')}>
       {/* Header */}
       <RibbonHeader
         title="Kuisioner Penelitian"

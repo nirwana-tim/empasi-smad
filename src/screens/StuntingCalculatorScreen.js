@@ -61,7 +61,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
   const isUnder24 = ageMonths < 24;
 
   return (
-    <ScreenContainer backgroundImage={require('../../Asset/bgkalkulator.png')}>
+    <ScreenContainer backgroundImage={require('../../Asset/defaultbg.png')}>
       {/* Header */}
       <RibbonHeader
         title="Kalkulator Stunting"
@@ -72,7 +72,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
       {/* Input Form Card */}
       <StickyCard backgroundColor="#FFFFFF" style={styles.formCard}>
         {/* Child Name (Optional) */}
-        <Text style={styles.inputLabel}>Nama Anak (Opsional):</Text>
+        <Text style={styles.inputLabel}>Nama Panggilan Anak (Opsional):</Text>
         <TextInput
           value={childName}
           onChangeText={setChildName}
@@ -82,7 +82,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
         />
 
         {/* Gender Selection */}
-        <Text style={styles.inputLabel}>Jenis Kelamin:</Text>
+        <Text style={styles.inputLabel}>Jenis Kelamin Anak:</Text>
         <View style={styles.genderRow}>
           <TouchableOpacity
             onPress={() => setGender('boy')}
@@ -95,7 +95,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
             <FontAwesome6
               name="mars"
               size={18}
-              color={gender === 'boy' ? '#FFFFFF' : '#3B82F6'}
+              color={gender === 'boy' ? '#FFFFFF' : '#2563EB'}
               style={{ marginRight: 6 }}
             />
             <Text style={[styles.genderBtnText, gender === 'boy' && styles.genderBtnTextActive]}>
@@ -114,7 +114,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
             <FontAwesome6
               name="venus"
               size={18}
-              color={gender === 'girl' ? '#FFFFFF' : '#EC4899'}
+              color={gender === 'girl' ? '#FFFFFF' : '#DB2777'}
               style={{ marginRight: 6 }}
             />
             <Text style={[styles.genderBtnText, gender === 'girl' && styles.genderBtnTextActive]}>
@@ -133,6 +133,25 @@ export default function StuntingCalculatorScreen({ navigation }) {
           unit="Bulan"
           color={gender === 'boy' ? '#2563EB' : '#DB2777'}
         />
+
+        {/* Quick Age Shortcuts */}
+        <View style={styles.quickAgeRow}>
+          <Text style={styles.quickAgeLabel}>Pilih Cepat:</Text>
+          {[6, 9, 12, 18, 24, 36, 48].map((m) => (
+            <TouchableOpacity
+              key={m}
+              onPress={() => setAgeMonths(m)}
+              style={[
+                styles.quickAgeBtn,
+                ageMonths === m && styles.quickAgeBtnActive,
+              ]}
+            >
+              <Text style={[styles.quickAgeText, ageMonths === m && styles.quickAgeTextActive]}>
+                {m} bln
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
         {/* Length / Height Input */}
         <View style={styles.measurementHeader}>
@@ -161,7 +180,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
         </View>
 
         <Text style={styles.measurementNote}>
-          * Standar WHO: Anak &lt; 24 bulan diukur panjang badan (terlentang), anak &ge; 24 bulan diukur tinggi badan (berdiri).
+          * Standar WHO: Anak &lt; 24 bulan diukur panjang badan (posisi terlentang), anak &ge; 24 bulan diukur tinggi badan (posisi berdiri tegak).
         </Text>
 
         {/* Submit Button */}
@@ -171,7 +190,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
           activeOpacity={0.8}
         >
           <Feather name="activity" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
-          <Text style={styles.calculateBtnText}>Hitung Status Stunting</Text>
+          <Text style={styles.calculateBtnText}>Hitung Status Stunting Sekarang</Text>
         </TouchableOpacity>
       </StickyCard>
 
@@ -204,7 +223,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               </Text>
               <Text style={styles.categoryLabel}>{result.status}</Text>
               <Text style={styles.medianRefText}>
-                Median Rata-rata WHO ({ageMonths} bln): <Text style={{ fontWeight: '800' }}>{result.whoMedian} cm</Text>
+                Median Standar WHO ({ageMonths} bln): <Text style={{ fontWeight: '800' }}>{result.whoMedian} cm</Text>
               </Text>
             </View>
 
@@ -213,7 +232,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
 
             {/* Recommendation Box */}
             <View style={styles.recommendationCard}>
-              <Text style={styles.recCardTitle}>💡 Rekomendasi Tindak Lanjut:</Text>
+              <Text style={styles.recCardTitle}>💡 Rekomendasi & Tindak Lanjut:</Text>
               {result.recommendations.map((item, idx) => (
                 <View key={idx} style={styles.recItemRow}>
                   <Feather name="check" size={14} color={COLORS.primaryDark} style={{ marginTop: 2, marginRight: 6 }} />
@@ -229,7 +248,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               activeOpacity={0.8}
             >
               <Feather name="refresh-cw" size={16} color={COLORS.textBody} style={{ marginRight: 6 }} />
-              <Text style={styles.resetBtnText}>Ukur Ulang</Text>
+              <Text style={styles.resetBtnText}>Hitung Ulang</Text>
             </TouchableOpacity>
           </StickyCard>
         </View>
@@ -255,7 +274,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8FAFC',
     borderWidth: 1.5,
     borderColor: '#CBD5E1',
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
@@ -273,8 +292,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    backgroundColor: '#F1F5F9',
-    borderRadius: 10,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
     marginHorizontal: 4,
     borderWidth: 1.5,
     borderColor: '#CBD5E1',
@@ -294,6 +313,42 @@ const styles = StyleSheet.create({
   },
   genderBtnTextActive: {
     color: '#FFFFFF',
+    fontWeight: '800',
+  },
+  quickAgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  quickAgeLabel: {
+    fontSize: 11,
+    color: COLORS.textMuted,
+    fontWeight: '700',
+    marginRight: 6,
+  },
+  quickAgeBtn: {
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    marginRight: 4,
+    marginBottom: 4,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  quickAgeBtnActive: {
+    backgroundColor: COLORS.primaryLight,
+    borderColor: COLORS.primary,
+  },
+  quickAgeText: {
+    fontSize: 11,
+    color: COLORS.textBody,
+    fontWeight: '600',
+  },
+  quickAgeTextActive: {
+    color: COLORS.primaryDark,
     fontWeight: '800',
   },
   measurementHeader: {
@@ -328,7 +383,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primaryLight,
     height: 48,
     paddingHorizontal: 16,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 8,
@@ -352,7 +407,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     marginTop: 16,
     ...SHADOWS.button,
   },
@@ -373,7 +428,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 12,
-    borderRadius: 10,
+    borderRadius: 12,
     marginBottom: 12,
   },
   statusBannerText: {
@@ -384,7 +439,7 @@ const styles = StyleSheet.create({
   },
   zscoreBox: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 12,
     alignItems: 'center',
     borderWidth: 1,
@@ -412,7 +467,7 @@ const styles = StyleSheet.create({
   },
   recommendationCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 10,
+    borderRadius: 12,
     padding: 12,
     marginTop: 8,
     borderWidth: 1,
@@ -441,7 +496,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#E2E8F0',
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 10,
     marginTop: 12,
   },
   resetBtnText: {
