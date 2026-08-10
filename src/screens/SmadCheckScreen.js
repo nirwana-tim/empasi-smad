@@ -40,6 +40,7 @@ export default function SmadCheckScreen({ navigation }) {
 
   // Toggle Food Selection
   const toggleFoodGroup = (id) => {
+    setResult(null);
     if (id === "breastmilk") {
       setIsBreastfeeding(!isBreastfeeding);
       return;
@@ -82,26 +83,6 @@ export default function SmadCheckScreen({ navigation }) {
       console.log("Error saving SMAD history:", err);
     }
   };
-
-  // Real-time update jika hasil sudah terbuka
-  useEffect(() => {
-    if (result) {
-      const evalResult = evaluateSMAD({
-        ageGroup,
-        isBreastfeeding,
-        selectedFoodIds,
-        mealFrequency,
-        milkFrequency,
-      });
-      setResult(evalResult);
-    }
-  }, [
-    ageGroup,
-    isBreastfeeding,
-    selectedFoodIds,
-    mealFrequency,
-    milkFrequency,
-  ]);
 
   const handleReset = () => {
     setAgeGroup("6-8");
@@ -151,7 +132,10 @@ export default function SmadCheckScreen({ navigation }) {
           <Text style={styles.questionTitle}>1. Usia Anak Saat Ini</Text>
           <View style={styles.segmentedContainer}>
             <TouchableOpacity
-              onPress={() => setAgeGroup("6-8")}
+              onPress={() => {
+                setAgeGroup("6-8");
+                setResult(null);
+              }}
               style={[
                 styles.segmentedTab,
                 ageGroup === "6-8" && styles.segmentedTabActive,
@@ -169,7 +153,10 @@ export default function SmadCheckScreen({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setAgeGroup("9-23")}
+              onPress={() => {
+                setAgeGroup("9-23");
+                setResult(null);
+              }}
               style={[
                 styles.segmentedTab,
                 ageGroup === "9-23" && styles.segmentedTabActive,
@@ -195,7 +182,10 @@ export default function SmadCheckScreen({ navigation }) {
           </Text>
           <View style={styles.segmentedContainer}>
             <TouchableOpacity
-              onPress={() => setIsBreastfeeding(true)}
+              onPress={() => {
+                setIsBreastfeeding(true);
+                setResult(null);
+              }}
               style={[
                 styles.segmentedTab,
                 isBreastfeeding && styles.segmentedTabActive,
@@ -213,7 +203,10 @@ export default function SmadCheckScreen({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setIsBreastfeeding(false)}
+              onPress={() => {
+                setIsBreastfeeding(false);
+                setResult(null);
+              }}
               style={[
                 styles.segmentedTab,
                 !isBreastfeeding && styles.segmentedTabDangerActive,
@@ -363,7 +356,10 @@ export default function SmadCheckScreen({ navigation }) {
           </Text>
           <StepperCounter
             value={mealFrequency}
-            onChange={setMealFrequency}
+            onChange={(val) => {
+              setMealFrequency(val);
+              setResult(null);
+            }}
             min={0}
             max={8}
             unit="kali makan"
@@ -392,7 +388,10 @@ export default function SmadCheckScreen({ navigation }) {
             </Text>
             <StepperCounter
               value={milkFrequency}
-              onChange={setMilkFrequency}
+              onChange={(val) => {
+                setMilkFrequency(val);
+                setResult(null);
+              }}
               min={0}
               max={8}
               unit="kali minum"

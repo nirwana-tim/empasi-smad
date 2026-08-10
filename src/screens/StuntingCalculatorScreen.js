@@ -81,16 +81,6 @@ export default function StuntingCalculatorScreen({ navigation }) {
     }
   };
 
-  // Auto-update jika hasil sudah terbuka dan user mengganti umur/gender
-  useEffect(() => {
-    if (result) {
-      const res = executeCalculation(lengthInput, ageMonths, gender);
-      if (res) {
-        setResult(res.calcResult);
-      }
-    }
-  }, [ageMonths, gender]);
-
   const handleReset = () => {
     setLengthInput('75.0');
     setErrorMessage('');
@@ -122,7 +112,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
             <Text style={styles.inputEmoji}>👶</Text>
             <TextInput
               value={childName}
-              onChangeText={setChildName}
+              onChangeText={(val) => {
+                setChildName(val);
+                setResult(null);
+              }}
               placeholder="Contoh: Adik Arka"
               placeholderTextColor="#94A3B8"
               style={styles.textInput}
@@ -135,7 +128,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
           <Text style={styles.fieldLabel}>Jenis Kelamin Anak:</Text>
           <View style={styles.genderRow}>
             <TouchableOpacity
-              onPress={() => setGender('boy')}
+              onPress={() => {
+                setGender('boy');
+                setResult(null);
+              }}
               style={[
                 styles.genderBtn,
                 gender === 'boy' ? styles.genderBtnBoyActive : styles.genderBtnInactive,
@@ -159,7 +155,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setGender('girl')}
+              onPress={() => {
+                setGender('girl');
+                setResult(null);
+              }}
               style={[
                 styles.genderBtn,
                 gender === 'girl' ? styles.genderBtnGirlActive : styles.genderBtnInactive,
@@ -200,7 +199,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
           {/* Stepper Counter */}
           <View style={styles.stepperContainer}>
             <TouchableOpacity
-              onPress={() => setAgeMonths(Math.max(0, ageMonths - 1))}
+              onPress={() => {
+                setAgeMonths(Math.max(0, ageMonths - 1));
+                setResult(null);
+              }}
               disabled={ageMonths <= 0}
               style={[
                 styles.stepperBtn,
@@ -220,7 +222,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
             </View>
 
             <TouchableOpacity
-              onPress={() => setAgeMonths(Math.min(60, ageMonths + 1))}
+              onPress={() => {
+                setAgeMonths(Math.min(60, ageMonths + 1));
+                setResult(null);
+              }}
               disabled={ageMonths >= 60}
               style={[
                 styles.stepperBtn,
@@ -246,7 +251,10 @@ export default function StuntingCalculatorScreen({ navigation }) {
                 return (
                   <TouchableOpacity
                     key={m}
-                    onPress={() => setAgeMonths(m)}
+                    onPress={() => {
+                      setAgeMonths(m);
+                      setResult(null);
+                    }}
                     style={[
                       styles.quickChip,
                       isSelected && (gender === 'boy' ? styles.quickChipBoy : styles.quickChipGirl),
@@ -288,6 +296,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               value={lengthInput}
               onChangeText={(val) => {
                 setLengthInput(val);
+                setResult(null);
                 if (errorMessage) setErrorMessage('');
               }}
               keyboardType="decimal-pad"
