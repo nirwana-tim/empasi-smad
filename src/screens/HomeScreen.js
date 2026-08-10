@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import ScreenContainer from '../components/common/ScreenContainer';
-import { COLORS, SHADOWS } from '../constants/theme';
+import { COLORS, FONTS, SHADOWS } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
 const cardMargin = 8;
@@ -138,11 +138,12 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     fontSize: 13,
-    fontWeight: '900',
+    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: COLORS.textTitle,
     textAlign: 'center',
     lineHeight: 19,
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
   gridContainer: {
     marginVertical: 4,
@@ -184,8 +185,9 @@ const styles = StyleSheet.create({
     borderColor: '#E2E8F0',
   },
   footerText: {
-    fontSize: 10,
+    fontSize: 11,
     color: COLORS.textMuted,
-    fontWeight: '700',
+    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
   },
 });

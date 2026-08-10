@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   scaleTextMedian: {
-    fontWeight: '800',
-    color: '#0F172A',
+    fontWeight: '700',
+    color: COLORS.textTitle,
   },
   legendRow: {
     flexDirection: 'row',

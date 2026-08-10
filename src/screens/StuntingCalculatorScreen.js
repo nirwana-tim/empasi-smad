@@ -15,7 +15,7 @@ import WashiTape from '../components/custom/WashiTape';
 import ZScoreGauge from '../components/custom/ZScoreGauge';
 import { calculateStuntingZScore } from '../services/stuntingService';
 import { StorageService } from '../services/storageService';
-import { COLORS, SHADOWS } from '../constants/theme';
+import { COLORS, FONTS, SHADOWS } from '../constants/theme';
 
 export default function StuntingCalculatorScreen({ navigation }) {
   const scrollRef = useRef(null);
@@ -109,7 +109,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
         onBack={() => navigation.goBack()}
       />
 
-      {/* SINGLE CLEAN CARD SURFACE (No Double Borders / No Card-in-Card) */}
+      {/* SINGLE CLEAN CARD SURFACE */}
       <View style={styles.singleMainCard}>
         {/* Washi Tapes on Corners */}
         <WashiTape position="top-left" color={COLORS.washiTape} />
@@ -130,7 +130,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Field 2: Jenis Kelamin (Clean Side-by-Side Buttons) */}
+        {/* Field 2: Jenis Kelamin */}
         <View style={styles.formGroup}>
           <Text style={styles.fieldLabel}>Jenis Kelamin Anak:</Text>
           <View style={styles.genderRow}>
@@ -209,7 +209,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               ]}
               activeOpacity={0.7}
             >
-              <Feather name="minus" size={22} color="#FFFFFF" />
+              <Feather name="minus" size={20} color="#FFFFFF" />
             </TouchableOpacity>
 
             <View style={[styles.stepperDisplay, { borderColor: gender === 'boy' ? '#93C5FD' : '#F9A8D4' }]}>
@@ -229,7 +229,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               ]}
               activeOpacity={0.7}
             >
-              <Feather name="plus" size={22} color="#FFFFFF" />
+              <Feather name="plus" size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
 
@@ -334,7 +334,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
             <View style={[styles.resultTitleBanner, { backgroundColor: result.statusColor }]}>
               <Feather
                 name={result.isStunting ? 'alert-triangle' : 'check-circle'}
-                size={22}
+                size={20}
                 color="#FFFFFF"
                 style={{ marginRight: 8 }}
               />
@@ -356,7 +356,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
 
               <View style={styles.comparisonBox}>
                 <Text style={styles.comparisonText}>
-                  📊 Median Standar WHO ({ageMonths} bln): <Text style={{ fontWeight: '800' }}>{result.whoMedian} cm</Text>
+                  📊 Median Standar WHO ({ageMonths} bln): <Text style={{ fontFamily: FONTS.semiBold, color: '#334155' }}>{result.whoMedian} cm</Text>
                 </Text>
               </View>
             </View>
@@ -381,7 +381,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
               style={styles.resetButton}
               activeOpacity={0.8}
             >
-              <Feather name="refresh-cw" size={16} color="#475569" style={{ marginRight: 6 }} />
+              <Feather name="refresh-cw" size={15} color="#475569" style={{ marginRight: 6 }} />
               <Text style={styles.resetButtonText}>Hitung Balita Lainnya</Text>
             </TouchableOpacity>
           </View>
@@ -412,8 +412,8 @@ const styles = StyleSheet.create({
   },
   fieldLabel: {
     fontSize: 13,
-    fontWeight: '800',
-    color: '#0F172A',
+    fontFamily: FONTS.semiBold,
+    color: '#334155',
     marginBottom: 8,
   },
   labelWithBadgeRow: {
@@ -443,8 +443,8 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     fontSize: 14,
-    color: '#0F172A',
-    fontWeight: '700',
+    fontFamily: FONTS.medium,
+    color: '#334155',
     paddingVertical: 0,
   },
   genderRow: {
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   genderBtnInactive: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: '#F8FAFC',
     borderWidth: 1.5,
     borderColor: '#E2E8F0',
   },
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
   },
   genderText: {
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
   },
   genderTextActive: {
     color: '#FFFFFF',
@@ -493,8 +493,8 @@ const styles = StyleSheet.create({
   },
   agePillText: {
     fontSize: 11,
-    fontWeight: '800',
-    color: '#475569',
+    fontFamily: FONTS.medium,
+    color: '#64748B',
   },
   stepperContainer: {
     flexDirection: 'row',
@@ -510,9 +510,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.1,
     shadowRadius: 3,
-    elevation: 3,
+    elevation: 2,
   },
   stepperBtnDisabled: {
     backgroundColor: '#CBD5E1',
@@ -533,12 +533,12 @@ const styles = StyleSheet.create({
   },
   stepperNumber: {
     fontSize: 22,
-    fontWeight: '900',
+    fontFamily: FONTS.bold,
     marginRight: 4,
   },
   stepperUnit: {
     fontSize: 13,
-    fontWeight: '700',
+    fontFamily: FONTS.medium,
     color: '#64748B',
   },
   quickAgeWrapper: {
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
   },
   quickAgeTitle: {
     fontSize: 11,
-    fontWeight: '700',
+    fontFamily: FONTS.medium,
     color: '#64748B',
     marginBottom: 6,
   },
@@ -568,12 +568,12 @@ const styles = StyleSheet.create({
   },
   quickChipText: {
     fontSize: 11,
-    color: '#475569',
-    fontWeight: '700',
+    color: '#64748B',
+    fontFamily: FONTS.medium,
   },
   quickChipTextActive: {
-    color: '#0F172A',
-    fontWeight: '900',
+    color: '#334155',
+    fontFamily: FONTS.semiBold,
   },
   posBadge: {
     paddingHorizontal: 8,
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
   },
   posBadgeText: {
     fontSize: 10,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
   },
   measurementBox: {
     flexDirection: 'row',
@@ -613,8 +613,8 @@ const styles = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     fontSize: 20,
-    fontWeight: '900',
-    color: '#0F172A',
+    fontFamily: FONTS.bold,
+    color: '#334155',
     paddingVertical: 0,
   },
   unitBadge: {
@@ -629,19 +629,20 @@ const styles = StyleSheet.create({
   },
   unitBadgeText: {
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
     color: '#0369A1',
   },
   errorBanner: {
     fontSize: 11,
     color: '#DC2626',
-    fontWeight: '700',
+    fontFamily: FONTS.medium,
     marginTop: 6,
   },
   guidelineNote: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#64748B',
-    lineHeight: 15,
+    lineHeight: 16,
+    fontFamily: FONTS.regular,
     marginTop: 6,
   },
   ctaButton: {
@@ -658,7 +659,7 @@ const styles = StyleSheet.create({
   ctaButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '800',
+    fontFamily: FONTS.bold,
     letterSpacing: 0.2,
   },
   resultSection: {
@@ -686,9 +687,9 @@ const styles = StyleSheet.create({
   },
   resultTitleBannerText: {
     color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '900',
-    letterSpacing: 0.4,
+    fontSize: 15,
+    fontFamily: FONTS.bold,
+    letterSpacing: 0.2,
   },
   metricCard: {
     backgroundColor: '#FFFFFF',
@@ -701,12 +702,12 @@ const styles = StyleSheet.create({
   },
   metricLabel: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: FONTS.medium,
     color: '#64748B',
   },
   metricNumber: {
-    fontSize: 34,
-    fontWeight: '900',
+    fontSize: 30,
+    fontFamily: FONTS.bold,
     marginVertical: 4,
   },
   categoryBadge: {
@@ -719,7 +720,7 @@ const styles = StyleSheet.create({
   },
   categoryBadgeText: {
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: FONTS.semiBold,
   },
   comparisonBox: {
     backgroundColor: '#F8FAFC',
@@ -732,7 +733,8 @@ const styles = StyleSheet.create({
   },
   comparisonText: {
     fontSize: 11,
-    color: '#334155',
+    fontFamily: FONTS.regular,
+    color: '#475569',
   },
   recommendationCard: {
     backgroundColor: '#FFFFFF',
@@ -744,8 +746,8 @@ const styles = StyleSheet.create({
   },
   recHeaderTitle: {
     fontSize: 13,
-    fontWeight: '800',
-    color: '#0F172A',
+    fontFamily: FONTS.semiBold,
+    color: '#334155',
     marginBottom: 8,
   },
   recItemRow: {
@@ -763,7 +765,8 @@ const styles = StyleSheet.create({
   },
   recItemText: {
     fontSize: 12,
-    color: '#334155',
+    color: '#475569',
+    fontFamily: FONTS.regular,
     flex: 1,
     lineHeight: 18,
   },
@@ -778,7 +781,7 @@ const styles = StyleSheet.create({
   },
   resetButtonText: {
     fontSize: 13,
-    fontWeight: '800',
-    color: '#334155',
+    fontFamily: FONTS.semiBold,
+    color: '#475569',
   },
 });

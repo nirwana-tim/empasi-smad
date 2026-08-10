@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { COLORS } from '../../constants/theme';
+import { COLORS, FONTS } from '../../constants/theme';
 
 export default function RibbonHeader({
   title,
@@ -104,13 +104,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '900',
-    letterSpacing: 0.4,
+    fontWeight: '700',
+    fontFamily: FONTS.bold,
+    letterSpacing: 0.2,
   },
   subtitle: {
     fontSize: 11,
     color: '#E0F2FE',
     fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     marginTop: 1,
   },
   rightActionContainer: {

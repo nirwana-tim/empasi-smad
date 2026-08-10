@@ -15,7 +15,7 @@ import StepperCounter from "../components/custom/StepperCounter";
 import { FOOD_GROUPS } from "../data/foodGroups";
 import { evaluateSMAD } from "../services/smadService";
 import { StorageService } from "../services/storageService";
-import { COLORS, SHADOWS } from "../constants/theme";
+import { COLORS, FONTS, SHADOWS } from "../constants/theme";
 
 export default function SmadCheckScreen({ navigation }) {
   const scrollRef = useRef(null);
@@ -573,13 +573,14 @@ const styles = StyleSheet.create({
   },
   introText: {
     fontSize: 12,
+    fontFamily: FONTS.medium,
     color: "#334155",
     flex: 1,
     lineHeight: 18,
   },
   boldText: {
-    fontWeight: "800",
-    color: "#0F172A",
+    fontFamily: FONTS.semiBold,
+    color: "#334155",
   },
   formPanel: {
     width: "100%",
@@ -598,12 +599,13 @@ const styles = StyleSheet.create({
   },
   questionTitle: {
     fontSize: 13,
-    fontWeight: "800",
-    color: "#0F172A",
+    fontFamily: FONTS.semiBold,
+    color: "#334155",
     marginBottom: 6,
   },
   questionSubtitle: {
     fontSize: 11,
+    fontFamily: FONTS.regular,
     color: "#64748B",
     marginBottom: 8,
     lineHeight: 15,
@@ -626,26 +628,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#0284C7",
     shadowColor: "#0284C7",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 2,
   },
   segmentedTabDangerActive: {
     backgroundColor: "#EF4444",
     shadowColor: "#EF4444",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 2,
   },
   segmentedText: {
     fontSize: 13,
-    fontWeight: "700",
+    fontFamily: FONTS.medium,
     color: "#64748B",
   },
   segmentedTextActive: {
     color: "#FFFFFF",
-    fontWeight: "800",
+    fontFamily: FONTS.semiBold,
   },
   sectionHeaderRow: {
     flexDirection: "row",
@@ -663,7 +665,7 @@ const styles = StyleSheet.create({
   },
   targetBadgeText: {
     fontSize: 10,
-    fontWeight: "800",
+    fontFamily: FONTS.semiBold,
     color: "#0369A1",
   },
   progressCard: {
@@ -682,12 +684,12 @@ const styles = StyleSheet.create({
   },
   progressLabel: {
     fontSize: 11,
-    fontWeight: "700",
+    fontFamily: FONTS.semiBold,
     color: "#0369A1",
   },
   progressScore: {
     fontSize: 11,
-    fontWeight: "800",
+    fontFamily: FONTS.bold,
   },
   progressBarTrack: {
     height: 6,
@@ -745,7 +747,7 @@ const styles = StyleSheet.create({
   },
   foodGroupBadge: {
     fontSize: 10,
-    fontWeight: "800",
+    fontFamily: FONTS.semiBold,
     color: "#64748B",
   },
   badgeTag: {
@@ -756,19 +758,20 @@ const styles = StyleSheet.create({
   },
   badgeTagText: {
     fontSize: 9,
-    fontWeight: "700",
+    fontFamily: FONTS.medium,
     color: "#475569",
   },
   foodTitle: {
     fontSize: 13,
-    fontWeight: "800",
-    color: "#0F172A",
+    fontFamily: FONTS.semiBold,
+    color: "#334155",
   },
   foodTitleActive: {
     color: "#15803D",
   },
   foodExamples: {
     fontSize: 11,
+    fontFamily: FONTS.regular,
     color: "#64748B",
     marginTop: 1,
   },
@@ -787,7 +790,7 @@ const styles = StyleSheet.create({
   evaluateBtnText: {
     color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: "800",
+    fontFamily: FONTS.bold,
     letterSpacing: 0.2,
   },
   resultSectionWrapper: {
@@ -812,9 +815,9 @@ const styles = StyleSheet.create({
   },
   resultBannerText: {
     color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "900",
-    letterSpacing: 0.5,
+    fontSize: 15,
+    fontFamily: FONTS.bold,
+    letterSpacing: 0.2,
   },
   indicatorsGrid: {
     flexDirection: "row",
@@ -832,18 +835,18 @@ const styles = StyleSheet.create({
   },
   indTitle: {
     fontSize: 10,
-    fontWeight: "700",
+    fontFamily: FONTS.medium,
     color: "#64748B",
     textAlign: "center",
   },
   indScore: {
     fontSize: 18,
-    fontWeight: "900",
+    fontFamily: FONTS.bold,
     marginVertical: 4,
   },
   indStatus: {
     fontSize: 9,
-    fontWeight: "700",
+    fontFamily: FONTS.medium,
     color: "#334155",
     textAlign: "center",
   },
@@ -856,8 +859,8 @@ const styles = StyleSheet.create({
   },
   recCardTitle: {
     fontSize: 13,
-    fontWeight: "800",
-    color: "#0F172A",
+    fontFamily: FONTS.semiBold,
+    color: "#334155",
     marginBottom: 8,
   },
   recItemBox: {
@@ -865,13 +868,14 @@ const styles = StyleSheet.create({
   },
   recTextMain: {
     fontSize: 12,
+    fontFamily: FONTS.regular,
     color: "#334155",
     lineHeight: 18,
   },
   recHighlightText: {
     fontSize: 12,
     color: "#0284C7",
-    fontWeight: "700",
+    fontFamily: FONTS.semiBold,
     marginTop: 2,
   },
   resetButton: {
@@ -885,7 +889,7 @@ const styles = StyleSheet.create({
   },
   resetButtonText: {
     fontSize: 13,
-    fontWeight: "800",
-    color: "#334155",
+    fontFamily: FONTS.semiBold,
+    color: "#475569",
   },
 });

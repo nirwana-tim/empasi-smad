@@ -16,7 +16,7 @@ import RibbonHeader from '../components/custom/RibbonHeader';
 import WashiTape from '../components/custom/WashiTape';
 import { QUESTIONNAIRE_LINKS } from '../constants/links';
 import { StorageService } from '../services/storageService';
-import { COLORS, SHADOWS } from '../constants/theme';
+import { COLORS, FONTS, SHADOWS } from '../constants/theme';
 
 export default function QuestionnaireScreen({ navigation }) {
   const [progress, setProgress] = useState({
@@ -397,22 +397,25 @@ const styles = StyleSheet.create({
   stepBadgeText: {
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '800',
+    fontWeight: '700',
+    fontFamily: FONTS.bold,
   },
   stepStatusText: {
     fontSize: 11,
     color: '#64748B',
-    fontWeight: '700',
+    fontWeight: '600',
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '900',
-    color: '#0F172A',
+    fontWeight: '700',
+    fontFamily: FONTS.bold,
+    color: '#334155',
     marginTop: 2,
   },
   cardSubtitle: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
+    fontFamily: FONTS.bold,
     marginBottom: 6,
   },
   cardDesc: {
@@ -484,7 +487,7 @@ const styles = StyleSheet.create({
   guidelineTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#334155',
     marginBottom: 10,
   },
   guideStepRow: {
@@ -515,7 +518,7 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#334155',
   },
   resetProgressBtn: {
     flexDirection: 'row',

@@ -29,8 +29,8 @@ export const COLORS = {
   infoLight: '#EAF2F8',
 
   // Neutral & Typography
-  textTitle: '#0F172A',
-  textBody: '#334155',
+  textTitle: '#334155',
+  textBody: '#475569',
   textMuted: '#64748B',
   border: '#CBD5E1',
   white: '#FFFFFF',
@@ -38,20 +38,27 @@ export const COLORS = {
   transparent: 'transparent',
 };
 
+export const FONTS = {
+  regular: 'Nunito_400Regular',
+  medium: 'Nunito_500Medium',
+  semiBold: 'Nunito_600SemiBold',
+  bold: 'Nunito_700Bold',
+};
+
 export const SHADOWS = {
   card: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 6,
     elevation: 3,
   },
   cardFloating: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 4,
   },
   button: {
     shadowColor: '#1D76A5',

@@ -13,7 +13,7 @@ import WashiTape from '../components/custom/WashiTape';
 import { EDUCATION_CHAPTERS } from '../data/educationContent';
 import { FOOD_GROUPS } from '../data/foodGroups';
 import { StorageService } from '../services/storageService';
-import { COLORS, SHADOWS } from '../constants/theme';
+import { COLORS, FONTS, SHADOWS } from '../constants/theme';
 
 export default function InformationScreen({ navigation }) {
   // activeIndex: 0 s/d (EDUCATION_CHAPTERS.length - 1) adalah Bab Materi
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
   sectionHeading: {
     fontSize: 15,
     fontWeight: '900',
-    color: '#0F172A',
+    color: '#334155',
     flex: 1,
   },
   highlightBox: {
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
   highlightText: {
     fontSize: 14,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#334155',
     lineHeight: 21,
   },
   sectionContent: {
@@ -446,7 +446,7 @@ const styles = StyleSheet.create({
   listTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#334155',
   },
   listDesc: {
     fontSize: 12,
@@ -472,20 +472,22 @@ const styles = StyleSheet.create({
   },
   tableAgeText: {
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '700',
+    fontFamily: FONTS.bold,
     color: '#0284C7',
     marginLeft: 6,
   },
   tableRowLabel: {
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '600',
     color: '#64748B',
     marginTop: 4,
   },
   tableRowValue: {
     fontSize: 13,
-    color: '#0F172A',
-    fontWeight: '700',
+    color: '#334155',
+    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
   },
   checklistContainer: {
     marginTop: 8,
@@ -502,11 +504,11 @@ const styles = StyleSheet.create({
   },
   checkText: {
     fontSize: 12,
-    color: '#1E293B',
+    color: '#334155',
     marginLeft: 8,
     flex: 1,
     lineHeight: 18,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   foodGridWrapper: {
     marginTop: 12,
@@ -516,8 +518,9 @@ const styles = StyleSheet.create({
   },
   foodGridTitle: {
     fontSize: 14,
-    fontWeight: '800',
-    color: '#0F172A',
+    fontWeight: '700',
+    fontFamily: FONTS.bold,
+    color: '#334155',
     marginBottom: 8,
   },
   foodCard: {
@@ -552,7 +555,7 @@ const styles = StyleSheet.create({
   foodTitle: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#334155',
   },
   foodExamples: {
     fontSize: 12,
@@ -578,7 +581,7 @@ const styles = StyleSheet.create({
   completionTitle: {
     fontSize: 17,
     fontWeight: '900',
-    color: '#0F172A',
+    color: '#334155',
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -591,7 +594,7 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#334155',
   },
   summaryPointsBox: {
     width: '100%',
@@ -605,7 +608,7 @@ const styles = StyleSheet.create({
   summaryPointsHeader: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#334155',
     marginBottom: 8,
   },
   pointRow: {
