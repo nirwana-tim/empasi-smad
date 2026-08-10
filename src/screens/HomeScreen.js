@@ -68,7 +68,7 @@ export default function HomeScreen({ navigation }) {
       {/* Greeting Slogan Box */}
       <View style={styles.greetingBox}>
         <Text style={styles.greetingText}>
-          Halo Bunda, yuk cek <Text style={styles.greetingHighlight}>kecukupan gizi si kecil</Text> hari ini! ✨
+          HALO BUNDA, YUK CEK KECUKUPAN GIZI MAKANAN SI KECIL HARI INI!
         </Text>
       </View>
 
@@ -138,14 +138,11 @@ const styles = StyleSheet.create({
   },
   greetingText: {
     fontSize: 13,
-    fontFamily: FONTS.medium,
+    fontFamily: FONTS.bold,
     color: '#334155',
     textAlign: 'center',
     lineHeight: 19,
-  },
-  greetingHighlight: {
-    fontFamily: FONTS.bold,
-    color: '#0284C7',
+    letterSpacing: 0.2,
   },
   gridContainer: {
     marginVertical: 4,

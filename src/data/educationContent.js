@@ -1,7 +1,7 @@
 export const EDUCATION_CHAPTERS = [
   {
     id: 'intro_smad',
-    title: '1. Pengertian MP-ASI & Standar SMAD',
+    title: 'Pengertian MP-ASI & Standar SMAD',
     shortTitle: 'Pengertian & SMAD',
     icon: 'book-open',
     color: '#38A3D8',
@@ -24,7 +24,7 @@ export const EDUCATION_CHAPTERS = [
   },
   {
     id: 'principles',
-    title: '2. Dasar & 6 Prinsip MP-ASI',
+    title: 'Dasar & 6 Prinsip MP-ASI',
     shortTitle: '6 Prinsip Emas',
     icon: 'award',
     color: '#F39C12',
@@ -53,7 +53,7 @@ export const EDUCATION_CHAPTERS = [
   },
   {
     id: 'food_diversity',
-    title: '3. 8 Kelompok Makanan & MDD',
+    title: '8 Kelompok Makanan & MDD',
     shortTitle: '8 Kelompok Pangan',
     icon: 'pie-chart',
     color: '#27AE60',
@@ -80,7 +80,7 @@ export const EDUCATION_CHAPTERS = [
   },
   {
     id: 'meal_frequency',
-    title: '4. Frekuensi Makan Minimum (MMF)',
+    title: 'Frekuensi Makan Minimum (MMF)',
     shortTitle: 'Frekuensi Makan',
     icon: 'clock',
     color: '#4E9E9C',
@@ -102,7 +102,7 @@ export const EDUCATION_CHAPTERS = [
   },
   {
     id: 'hygiene',
-    title: '5. 5 Kunci Keamanan & Higienitas Pangan',
+    title: '5 Kunci Keamanan & Higienitas Pangan',
     shortTitle: 'Higienitas & Sanitasi',
     icon: 'shield',
     color: '#2980B9',
@@ -122,7 +122,7 @@ export const EDUCATION_CHAPTERS = [
   },
   {
     id: 'responsive_feeding',
-    title: '6. Pemberian Makan Responsif & Kasih Sayang',
+    title: 'Pemberian Makan Responsif & Kasih Sayang',
     shortTitle: 'Responsive Feeding',
     icon: 'smile',
     color: '#E74C3C',

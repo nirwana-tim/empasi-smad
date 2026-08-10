@@ -117,7 +117,7 @@ export default function StuntingCalculatorScreen({ navigation }) {
 
         {/* Field 1: Nama Anak */}
         <View style={styles.formGroup}>
-          <Text style={styles.fieldLabel}>Nama Panggilan Anak (Opsional):</Text>
+          <Text style={styles.fieldLabel}>Nama Panggilan Anak:</Text>
           <View style={styles.inputContainer}>
             <Text style={styles.inputEmoji}>👶</Text>
             <TextInput

@@ -154,24 +154,38 @@ export default function QuestionnaireScreen({ navigation }) {
         </Text>
       </View>
 
-      {/* CARD 1: PRE-TEST (Langkah Pertama) */}
+      {/* CARD 1: PRE-TEST (Tema Biru Harmonis) */}
       <View style={[styles.stepCard, progress.hasCompletedPretest && styles.stepCardDone]}>
         <WashiTape position="top-left" color={COLORS.washiTape} />
         <WashiTape position="top-right" color={COLORS.washiTape} />
 
         <View style={styles.cardHeaderRow}>
-          <View style={[styles.stepBadge, { backgroundColor: progress.hasCompletedPretest ? '#10B981' : '#0284C7' }]}>
-            <Text style={styles.stepBadgeText}>
-              {progress.hasCompletedPretest ? '✅ Selesai Diisi' : 'Langkah 1 (Awal)'}
+          <View
+            style={[
+              styles.stepBadge,
+              {
+                backgroundColor: progress.hasCompletedPretest ? '#E0F2FE' : '#0284C7',
+                borderWidth: progress.hasCompletedPretest ? 1 : 0,
+                borderColor: '#BAE6FD',
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.stepBadgeText,
+                progress.hasCompletedPretest && { color: '#0369A1' },
+              ]}
+            >
+              {progress.hasCompletedPretest ? '✓ Selesai Diisi' : 'Langkah 1 (Awal)'}
             </Text>
           </View>
-          <Text style={[styles.stepStatusText, progress.hasCompletedPretest && { color: '#15803D' }]}>
+          <Text style={styles.stepStatusText}>
             {progress.hasCompletedPretest ? 'Telah Diselesaikan' : 'Wajib Diisi di Awal'}
           </Text>
         </View>
 
         <Text style={styles.cardTitle}>{pretest.title}</Text>
-        <Text style={[styles.cardSubtitle, { color: progress.hasCompletedPretest ? '#15803D' : '#0284C7' }]}>
+        <Text style={[styles.cardSubtitle, { color: '#0284C7' }]}>
           {pretest.subtitle}
         </Text>
         <Text style={styles.cardDesc}>

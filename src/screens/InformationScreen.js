@@ -168,13 +168,25 @@ export default function InformationScreen({ navigation }) {
                 </View>
               )}
 
-              {/* Checklist items */}
+              {/* Checklist items (Single Unified Card) */}
               {section.checklist && (
-                <View style={styles.checklistContainer}>
+                <View style={styles.checklistCard}>
+                  <View style={styles.checklistHeader}>
+                    <Feather name="clipboard" size={15} color="#059669" style={{ marginRight: 6 }} />
+                    <Text style={styles.checklistHeaderTitle}>7 Kebiasaan Emas MP-ASI di Rumah</Text>
+                  </View>
                   {section.checklist.map((item, cIdx) => (
-                    <View key={cIdx} style={styles.checkItem}>
-                      <Feather name="check-circle" size={18} color="#10B981" />
-                      <Text style={styles.checkText}>{item}</Text>
+                    <View
+                      key={cIdx}
+                      style={[
+                        styles.checkRow,
+                        cIdx < section.checklist.length - 1 && styles.checkRowBorder,
+                      ]}
+                    >
+                      <View style={styles.checkIconWrapper}>
+                        <Feather name="check" size={11} color="#FFFFFF" />
+                      </View>
+                      <Text style={styles.checkRowText}>{item}</Text>
                     </View>
                   ))}
                 </View>
@@ -491,26 +503,54 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontFamily: FONTS.semiBold,
   },
-  checklistContainer: {
+  checklistCard: {
+    backgroundColor: '#F0FDF4',
+    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: '#BBF7D0',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     marginTop: 8,
   },
-  checkItem: {
+  checklistHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    paddingBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#DCFCE7',
+  },
+  checklistHeaderTitle: {
+    fontSize: 12,
+    fontFamily: FONTS.semiBold,
+    color: '#059669',
+    letterSpacing: 0.2,
+  },
+  checkRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 8,
-    backgroundColor: '#F0FDF4',
-    padding: 10,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#DCFCE7',
+    paddingVertical: 8,
   },
-  checkText: {
+  checkRowBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#DCFCE7',
+  },
+  checkIconWrapper: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#10B981',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 1,
+    marginRight: 10,
+  },
+  checkRowText: {
     fontSize: 12,
+    fontFamily: FONTS.regular,
     color: '#334155',
-    marginLeft: 8,
     flex: 1,
     lineHeight: 18,
-    fontWeight: '500',
   },
   foodGridWrapper: {
     marginTop: 12,
