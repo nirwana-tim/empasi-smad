@@ -30,6 +30,12 @@
     "plugins": [
       "expo-web-browser",
       "expo-font"
-    ]
+    ],
+    "owner": "fhazar_aqyla",
+    "extra": {
+      "eas": {
+        "projectId": "04eeb9c6-11f8-450f-a36c-2f3b927dfb28"
+      }
+    }
   }
 }
