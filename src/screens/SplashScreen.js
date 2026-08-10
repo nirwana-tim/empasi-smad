@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { COLORS } from '../constants/theme';
+import { COLORS, FONTS } from '../constants/theme';
 
 export default function SplashScreen({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   loadingText: {
     fontSize: 13,
-    fontWeight: '800',
+    fontFamily: FONTS.bold,
     color: COLORS.textTitle,
     marginLeft: 8,
   },

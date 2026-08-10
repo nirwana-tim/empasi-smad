@@ -541,21 +541,19 @@ const styles = StyleSheet.create({
   },
   tableAgeText: {
     fontSize: 14,
-    fontWeight: '700',
     fontFamily: FONTS.bold,
     color: '#0284C7',
     marginLeft: 6,
   },
   tableRowLabel: {
     fontSize: 11,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: '#64748B',
     marginTop: 4,
   },
   tableRowValue: {
     fontSize: 13,
     color: '#334155',
-    fontWeight: '600',
     fontFamily: FONTS.semiBold,
   },
   checklistCard: {
@@ -615,7 +613,6 @@ const styles = StyleSheet.create({
   },
   foodGridTitle: {
     fontSize: 14,
-    fontWeight: '700',
     fontFamily: FONTS.bold,
     color: '#334155',
     marginBottom: 8,
@@ -646,7 +643,7 @@ const styles = StyleSheet.create({
   },
   foodCategory: {
     fontSize: 10,
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
     color: '#64748B',
   },
   foodTitle: {

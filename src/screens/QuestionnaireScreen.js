@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     color: '#334155',
     flex: 1,
     lineHeight: 18,
-    fontWeight: '500',
+    fontFamily: FONTS.medium,
   },
   stepCard: {
     backgroundColor: '#FFFFFF',
@@ -381,24 +381,21 @@ const styles = StyleSheet.create({
   stepBadgeText: {
     color: '#FFFFFF',
     fontSize: 11,
-    fontWeight: '700',
     fontFamily: FONTS.bold,
   },
   stepStatusText: {
     fontSize: 11,
     color: '#64748B',
-    fontWeight: '600',
+    fontFamily: FONTS.semiBold,
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: '700',
     fontFamily: FONTS.bold,
     color: '#334155',
     marginTop: 2,
   },
   cardSubtitle: {
     fontSize: 12,
-    fontWeight: '700',
     fontFamily: FONTS.bold,
     marginBottom: 6,
   },

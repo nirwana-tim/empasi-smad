@@ -186,7 +186,6 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 11,
     color: COLORS.textMuted,
-    fontWeight: '600',
     fontFamily: FONTS.semiBold,
   },
 });

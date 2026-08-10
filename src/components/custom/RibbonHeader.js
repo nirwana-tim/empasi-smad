@@ -104,14 +104,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '700',
     fontFamily: FONTS.bold,
     letterSpacing: 0.2,
   },
   subtitle: {
     fontSize: 11,
     color: '#E0F2FE',
-    fontWeight: '600',
     fontFamily: FONTS.semiBold,
     marginTop: 1,
   },
