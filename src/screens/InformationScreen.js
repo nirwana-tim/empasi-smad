@@ -19,10 +19,26 @@ export default function InformationScreen({ navigation }) {
   // activeIndex: 0 s/d (EDUCATION_CHAPTERS.length - 1) adalah Bab Materi
   // activeIndex === EDUCATION_CHAPTERS.length adalah Halaman Terpisah: SELESAI
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+  const [hasCompleted, setHasCompleted] = useState(false);
   const [checkedHomeItems, setCheckedHomeItems] = useState([0, 1, 2]);
   const totalChapters = EDUCATION_CHAPTERS.length;
   const isCompletionPage = activeChapterIndex === totalChapters;
   const chapter = !isCompletionPage ? EDUCATION_CHAPTERS[activeChapterIndex] : null;
+
+  // Cek apakah user sebelumnya sudah pernah menyelesaikan materi
+  useEffect(() => {
+    const checkCompletion = async () => {
+      try {
+        const completed = await StorageService.isMaterialsCompleted();
+        if (completed) {
+          setHasCompleted(true);
+        }
+      } catch (err) {
+        console.log('Error checking materials completion:', err);
+      }
+    };
+    checkCompletion();
+  }, []);
 
   const toggleHomeCheck = (index) => {
     if (checkedHomeItems.includes(index)) {
@@ -35,6 +51,7 @@ export default function InformationScreen({ navigation }) {
   // Jika sampai di Halaman Selesai, otomatis tandai materi telah rampung
   useEffect(() => {
     if (isCompletionPage) {
+      setHasCompleted(true);
       StorageService.setMaterialsCompleted(true);
     }
   }, [activeChapterIndex]);
@@ -78,24 +95,26 @@ export default function InformationScreen({ navigation }) {
           );
         })}
 
-        {/* Tab Selesai */}
-        <TouchableOpacity
-          onPress={() => setActiveChapterIndex(totalChapters)}
-          style={[
-            styles.tabPill,
-            isCompletionPage && { backgroundColor: '#10B981', borderColor: '#10B981' },
-          ]}
-          activeOpacity={0.8}
-        >
-          <Text
+        {/* Tab Selesai - HANYA MUNCUL JIKA USER SUDAH KLIK SELESAI BELAJAR */}
+        {(hasCompleted || isCompletionPage) && (
+          <TouchableOpacity
+            onPress={() => setActiveChapterIndex(totalChapters)}
             style={[
-              styles.tabPillText,
-              isCompletionPage && styles.tabPillTextActive,
+              styles.tabPill,
+              isCompletionPage && { backgroundColor: '#10B981', borderColor: '#10B981' },
             ]}
+            activeOpacity={0.8}
           >
-            🎉 Selesai
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={[
+                styles.tabPillText,
+                isCompletionPage && styles.tabPillTextActive,
+              ]}
+            >
+              🎉 Selesai
+            </Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
 
       {/* MAIN CONTENT CARD */}
@@ -297,38 +316,43 @@ export default function InformationScreen({ navigation }) {
       )}
 
       {/* Next/Prev Chapter Navigation Buttons */}
-      <View style={styles.navButtonsRow}>
-        <TouchableOpacity
-          onPress={() => setActiveChapterIndex(Math.max(0, activeChapterIndex - 1))}
-          disabled={activeChapterIndex === 0}
-          style={[
-            styles.navBtn,
-            activeChapterIndex === 0 && styles.navBtnDisabled,
-          ]}
-          activeOpacity={0.8}
-        >
-          <Feather name="chevron-left" size={18} color={activeChapterIndex === 0 ? COLORS.textMuted : '#FFFFFF'} />
-          <Text style={[styles.navBtnText, activeChapterIndex === 0 && styles.navBtnTextDisabled]}>
-            Sebelumnya
-          </Text>
-        </TouchableOpacity>
+      {!isCompletionPage && (
+        <View style={styles.navButtonsRow}>
+          <TouchableOpacity
+            onPress={() => setActiveChapterIndex(Math.max(0, activeChapterIndex - 1))}
+            disabled={activeChapterIndex === 0}
+            style={[
+              styles.navBtn,
+              activeChapterIndex === 0 && styles.navBtnDisabled,
+            ]}
+            activeOpacity={0.8}
+          >
+            <Feather name="chevron-left" size={18} color={activeChapterIndex === 0 ? COLORS.textMuted : '#FFFFFF'} />
+            <Text style={[styles.navBtnText, activeChapterIndex === 0 && styles.navBtnTextDisabled]}>
+              Sebelumnya
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => setActiveChapterIndex(Math.min(totalChapters, activeChapterIndex + 1))}
-          disabled={isCompletionPage}
-          style={[
-            styles.navBtn,
-            styles.navBtnPrimary,
-            isCompletionPage && styles.navBtnDisabled,
-          ]}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.navBtnText, isCompletionPage && styles.navBtnTextDisabled]}>
-            {activeChapterIndex === totalChapters - 1 ? 'Selesai Belajar 🎉' : 'Selanjutnya'}
-          </Text>
-          <Feather name="chevron-right" size={18} color={isCompletionPage ? COLORS.textMuted : '#FFFFFF'} />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={() => {
+              if (activeChapterIndex === totalChapters - 1) {
+                setHasCompleted(true);
+                StorageService.setMaterialsCompleted(true);
+                setActiveChapterIndex(totalChapters);
+              } else {
+                setActiveChapterIndex(activeChapterIndex + 1);
+              }
+            }}
+            style={[styles.navBtn, styles.navBtnPrimary]}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.navBtnText}>
+              {activeChapterIndex === totalChapters - 1 ? 'Selesai Belajar 🎉' : 'Selanjutnya'}
+            </Text>
+            <Feather name="chevron-right" size={18} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+      )}
 
       <View style={{ height: 30 }} />
     </ScreenContainer>
