@@ -27,7 +27,7 @@ export default function SmadCheckScreen({ navigation }) {
     "grains_roots",
     "flesh_foods",
     "eggs",
-    "fruits_veg_vita",
+    "vitamin_a_fruits_veg",
   ]);
   const [mealFrequency, setMealFrequency] = useState(2);
   const [milkFrequency, setMilkFrequency] = useState(0);
@@ -445,63 +445,193 @@ export default function SmadCheckScreen({ navigation }) {
                 color="#FFFFFF"
                 style={{ marginRight: 8 }}
               />
-              <Text style={styles.resultBannerText}>{result.statusTitle}</Text>
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text style={styles.resultBannerText}>{result.statusTitle}</Text>
+                <Text style={styles.resultBannerSubtitle}>
+                  Standar Minimum Acceptable Diet (MAD) WHO
+                </Text>
+              </View>
+            </View>
+
+            {/* Hero Metric Summary Card */}
+            <View style={styles.metricSummaryCard}>
+              <Text style={styles.metricLabel}>Skor Keragaman Pangan (MDD)</Text>
+              <Text style={[styles.metricNumber, { color: result.statusColor }]}>
+                {result.mdd.score} / 8
+              </Text>
+
+              <View
+                style={[
+                  styles.categoryBadge,
+                  {
+                    backgroundColor: result.statusBg,
+                    borderColor: result.statusColor,
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.categoryBadgeText,
+                    { color: result.statusColor },
+                  ]}
+                >
+                  {result.mdd.isPass
+                    ? "Keragaman Terpenuhi (≥5 Kelompok)"
+                    : "Kurang Beragam (<5 Kelompok)"}
+                </Text>
+              </View>
+
+              <View style={styles.comparisonBox}>
+                <Text style={styles.comparisonText}>
+                  {result.isMadPass
+                    ? "🌟 Makanan si kecil telah memenuhi standar keragaman & frekuensi gizi harian!"
+                    : "⚠️ Si kecil memerlukan minimal 5 kelompok makanan & frekuensi makan yang cukup."}
+                </Text>
+              </View>
             </View>
 
             {/* 3 Indikator Breakdown Cards */}
             <View style={styles.indicatorsGrid}>
               {/* MDD */}
               <View style={styles.indicatorCard}>
-                <Text style={styles.indTitle}>Keragaman (MDD)</Text>
+                <Text style={styles.indIcon}>🥗</Text>
+                <Text style={styles.indTitle}>Keragaman</Text>
                 <Text
                   style={[
                     styles.indScore,
-                    { color: result.mdd.isPass ? "#16A34A" : "#DC2626" },
+                    { color: result.mdd.isPass ? "#15803D" : "#DC2626" },
                   ]}
                 >
                   {result.mdd.score}/8
                 </Text>
-                <Text style={styles.indStatus}>
-                  {result.mdd.isPass ? "✅ Tercapai (≥5)" : "❌ Kurang (<5)"}
-                </Text>
+                <View
+                  style={[
+                    styles.indBadge,
+                    {
+                      backgroundColor: result.mdd.isPass ? "#DCFCE7" : "#FEE2E2",
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.indStatus,
+                      { color: result.mdd.isPass ? "#15803D" : "#DC2626" },
+                    ]}
+                  >
+                    {result.mdd.isPass ? "✅ Min. 5" : "❌ Kurang"}
+                  </Text>
+                </View>
               </View>
 
               {/* MMF */}
               <View style={styles.indicatorCard}>
-                <Text style={styles.indTitle}>Frekuensi (MMF)</Text>
+                <Text style={styles.indIcon}>⏱️</Text>
+                <Text style={styles.indTitle}>Frekuensi</Text>
                 <Text
                   style={[
                     styles.indScore,
-                    { color: result.mmf.isPass ? "#16A34A" : "#DC2626" },
+                    { color: result.mmf.isPass ? "#15803D" : "#DC2626" },
                   ]}
                 >
                   {result.mmf.count}x
                 </Text>
-                <Text style={styles.indStatus}>
-                  {result.mmf.isPass
-                    ? `✅ Cukup (≥${result.mmf.target}x)`
-                    : `❌ Kurang (<${result.mmf.target}x)`}
-                </Text>
+                <View
+                  style={[
+                    styles.indBadge,
+                    {
+                      backgroundColor: result.mmf.isPass ? "#DCFCE7" : "#FEE2E2",
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.indStatus,
+                      { color: result.mmf.isPass ? "#15803D" : "#DC2626" },
+                    ]}
+                  >
+                    {result.mmf.isPass ? `✅ Min. ${result.mmf.target}x` : "❌ Kurang"}
+                  </Text>
+                </View>
               </View>
 
               {/* MMFF */}
               <View style={styles.indicatorCard}>
-                <Text style={styles.indTitle}>Susu (MMFF)</Text>
+                <Text style={styles.indIcon}>{isBreastfeeding ? "🤱" : "🍼"}</Text>
+                <Text style={styles.indTitle}>Status Susu</Text>
                 <Text
                   style={[
                     styles.indScore,
-                    { color: result.mmff.isPass ? "#16A34A" : "#DC2626" },
+                    { color: result.mmff.isPass ? "#15803D" : "#DC2626" },
                   ]}
                 >
                   {result.mmff.isApplicable ? `${result.mmff.count}x` : "ASI"}
                 </Text>
-                <Text style={styles.indStatus}>
-                  {result.mmff.isApplicable
-                    ? result.mmff.isPass
-                      ? "✅ Cukup (≥2x)"
-                      : "❌ Kurang (<2x)"
-                    : "🤱 Menyusu ASI"}
-                </Text>
+                <View
+                  style={[
+                    styles.indBadge,
+                    {
+                      backgroundColor: result.mmff.isPass ? "#DCFCE7" : "#FEE2E2",
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.indStatus,
+                      { color: result.mmff.isPass ? "#15803D" : "#DC2626" },
+                    ]}
+                  >
+                    {result.mmff.isApplicable
+                      ? result.mmff.isPass
+                        ? "✅ Min. 2x"
+                        : "❌ Kurang"
+                      : "✅ Terpenuhi"}
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            {/* Visual 8 Food Groups Breakdown Grid */}
+            <View style={styles.foodBreakdownCard}>
+              <Text style={styles.foodBreakdownTitle}>
+                📋 Ringkasan 8 Kelompok Makanan Kemarin:
+              </Text>
+              <View style={styles.foodBreakdownGrid}>
+                {FOOD_GROUPS.map((food) => {
+                  const isAsi = food.id === "breastmilk";
+                  const isEaten = isAsi
+                    ? isBreastfeeding
+                    : selectedFoodIds.includes(food.id);
+
+                  return (
+                    <View
+                      key={food.id}
+                      style={[
+                        styles.foodBreakdownChip,
+                        isEaten
+                          ? styles.foodBreakdownChipActive
+                          : styles.foodBreakdownChipInactive,
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.foodBreakdownIcon,
+                          { color: isEaten ? "#15803D" : "#94A3B8" },
+                        ]}
+                      >
+                        {isEaten ? "✓" : "○"}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.foodBreakdownText,
+                          isEaten && styles.foodBreakdownTextActive,
+                        ]}
+                        numberOfLines={1}
+                      >
+                        {food.groupNumber}. {food.title}
+                      </Text>
+                    </View>
+                  );
+                })}
               </View>
             </View>
 
@@ -512,11 +642,16 @@ export default function SmadCheckScreen({ navigation }) {
               </Text>
               {result.recommendations.map((rec, rIdx) => (
                 <View key={rIdx} style={styles.recItemBox}>
-                  <Text style={styles.recTextMain}>{rec.text}</Text>
+                  <View style={styles.recItemRow}>
+                    <View style={styles.recBulletDot} />
+                    <Text style={styles.recTextMain}>{rec.text}</Text>
+                  </View>
                   {rec.highlight && (
-                    <Text style={styles.recHighlightText}>
-                      👉 {rec.highlight}
-                    </Text>
+                    <View style={styles.recHighlightPill}>
+                      <Text style={styles.recHighlightText}>
+                        👉 {rec.highlight}
+                      </Text>
+                    </View>
                   )}
                 </View>
               ))}
@@ -811,6 +946,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
+    position: "relative",
     ...SHADOWS.cardFloating,
   },
   resultBanner: {
@@ -827,6 +963,63 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: FONTS.bold,
     letterSpacing: 0.2,
+    textAlign: "center",
+  },
+  resultBannerSubtitle: {
+    color: "rgba(255, 255, 255, 0.9)",
+    fontSize: 11,
+    fontFamily: FONTS.medium,
+    marginTop: 2,
+    textAlign: "center",
+  },
+  metricSummaryCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 16,
+    alignItems: "center",
+    marginBottom: 12,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    ...SHADOWS.card,
+  },
+  metricLabel: {
+    fontSize: 12,
+    fontFamily: FONTS.semiBold,
+    color: "#64748B",
+    marginBottom: 4,
+  },
+  metricNumber: {
+    fontSize: 34,
+    fontFamily: FONTS.bold,
+    marginVertical: 2,
+  },
+  categoryBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    marginTop: 4,
+    marginBottom: 10,
+  },
+  categoryBadgeText: {
+    fontSize: 12,
+    fontFamily: FONTS.bold,
+  },
+  comparisonBox: {
+    backgroundColor: "#F8FAFC",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+  comparisonText: {
+    fontSize: 12,
+    fontFamily: FONTS.medium,
+    color: "#334155",
+    textAlign: "center",
+    lineHeight: 18,
   },
   indicatorsGrid: {
     flexDirection: "row",
@@ -836,35 +1029,98 @@ const styles = StyleSheet.create({
   indicatorCard: {
     flex: 1,
     backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    padding: 10,
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 6,
     alignItems: "center",
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
+    ...SHADOWS.card,
+  },
+  indIcon: {
+    fontSize: 20,
+    marginBottom: 4,
   },
   indTitle: {
-    fontSize: 10,
-    fontFamily: FONTS.medium,
+    fontSize: 11,
+    fontFamily: FONTS.semiBold,
     color: "#64748B",
     textAlign: "center",
   },
   indScore: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: FONTS.bold,
     marginVertical: 4,
   },
+  indBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
   indStatus: {
     fontSize: 9,
-    fontFamily: FONTS.medium,
-    color: "#334155",
+    fontFamily: FONTS.bold,
     textAlign: "center",
+  },
+  foodBreakdownCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 12,
+    borderWidth: 1.5,
+    borderColor: "#E2E8F0",
+    ...SHADOWS.card,
+  },
+  foodBreakdownTitle: {
+    fontSize: 13,
+    fontFamily: FONTS.semiBold,
+    color: "#334155",
+    marginBottom: 10,
+  },
+  foodBreakdownGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+  },
+  foodBreakdownChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    width: "48.5%",
+  },
+  foodBreakdownChipActive: {
+    backgroundColor: "#F0FDF4",
+    borderColor: "#86EFAC",
+  },
+  foodBreakdownChipInactive: {
+    backgroundColor: "#F8FAFC",
+    borderColor: "#E2E8F0",
+  },
+  foodBreakdownIcon: {
+    fontSize: 12,
+    fontFamily: FONTS.bold,
+    marginRight: 4,
+  },
+  foodBreakdownText: {
+    fontSize: 10,
+    fontFamily: FONTS.medium,
+    color: "#64748B",
+    flex: 1,
+  },
+  foodBreakdownTextActive: {
+    color: "#15803D",
+    fontFamily: FONTS.semiBold,
   },
   recommendationCard: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 14,
+    borderRadius: 16,
     padding: 14,
     borderWidth: 1.5,
     borderColor: "#E2E8F0",
+    ...SHADOWS.card,
   },
   recCardTitle: {
     fontSize: 13,
@@ -873,27 +1129,50 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   recItemBox: {
-    marginBottom: 8,
+    marginBottom: 10,
+  },
+  recItemRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  recBulletDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#0284C7",
+    marginTop: 6,
+    marginRight: 8,
   },
   recTextMain: {
     fontSize: 12,
     fontFamily: FONTS.regular,
     color: "#334155",
     lineHeight: 18,
+    flex: 1,
+  },
+  recHighlightPill: {
+    backgroundColor: "#EFF6FF",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    marginTop: 4,
+    marginLeft: 14,
+    alignSelf: "flex-start",
+    borderWidth: 1,
+    borderColor: "#DBEAFE",
   },
   recHighlightText: {
-    fontSize: 12,
+    fontSize: 11,
     color: "#0284C7",
     fontFamily: FONTS.semiBold,
-    marginTop: 2,
   },
   resetButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#E2E8F0",
-    paddingVertical: 11,
-    borderRadius: 12,
+    paddingVertical: 12,
+    borderRadius: 14,
     marginTop: 12,
   },
   resetButtonText: {
