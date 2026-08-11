@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
+import { createAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ScreenContainer from '../components/common/ScreenContainer';
 import { COLORS, FONTS, SHADOWS } from '../constants/theme';
 
@@ -59,39 +59,63 @@ function MenuButton({ imageSource, onPress, style }) {
 }
 
 export default function HomeScreen({ navigation }) {
-  // Inisialisasi Audio Player dengan file Asset/music.mpeg
-  const player = useAudioPlayer(require('../../Asset/music.mpeg'));
+  const playerRef = useRef(null);
 
-  // Set audio mode agar dapat berbunyi meskipun mode silent di iOS
+  // Inisialisasi Audio Player di background secara aman tanpa memblokir rendering UI
   useEffect(() => {
-    setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
-  }, []);
+    let isMounted = true;
 
-  // Putar musik otomatis HANYA satu kali saat pertama kali masuk ke Beranda
-  useEffect(() => {
-    if (!hasAutoPlayedIntroMusic && player) {
+    async function initAndPlayAudio() {
+      if (hasAutoPlayedIntroMusic) return;
       hasAutoPlayedIntroMusic = true;
+
       try {
-        player.play();
+        await setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+        const player = createAudioPlayer(require('../../Asset/music.mp3'));
+        if (isMounted && player) {
+          playerRef.current = player;
+          player.play();
+        } else if (player) {
+          player.release?.();
+        }
       } catch (err) {
-        console.log('Autoplay audio notice:', err);
+        console.log('Audio playback notice (safe fallback):', err);
       }
     }
-  }, [player]);
+
+    // Beri sedikit jeda agar layar selesai dirender dengan mulus
+    const timer = setTimeout(() => {
+      initAndPlayAudio();
+    }, 400);
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timer);
+      if (playerRef.current) {
+        try {
+          playerRef.current.pause?.();
+          playerRef.current.release?.();
+        } catch (e) {
+          // ignore
+        }
+        playerRef.current = null;
+      }
+    };
+  }, []);
 
   // Hentikan/pause musik saat berpindah ke menu/layar lain agar tidak mengganggu
   useFocusEffect(
     useCallback(() => {
       return () => {
         try {
-          if (player) {
-            player.pause();
+          if (playerRef.current) {
+            playerRef.current.pause?.();
           }
         } catch (err) {
           // ignore
         }
       };
-    }, [player])
+    }, [])
   );
 
   return (
