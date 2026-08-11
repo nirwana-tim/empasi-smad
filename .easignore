@@ -1,0 +1,23 @@
+node_modules/
+.expo/
+dist/
+web-build/
+.git/
+*.docx
+*.pdf
+Asset/*.docx
+Asset/*.pdf
+Asset/Logo 1_1.png
+Asset/Logo Full.png
+Asset/beranda.png
+Asset/bgkalkulator.png
+Asset/bgkuisiner.png
+Asset/bgsmad.png
+Asset/informasi.png
+Asset/kalkulator.png
+Asset/kuisioner.png
+Asset/SMAD.png
+Asset/WhatsApp Image*
+Asset/Logo Aplikasi MPASI*.png
+stunting_v483_unescaped.js
+generate_manual_pdf.py
