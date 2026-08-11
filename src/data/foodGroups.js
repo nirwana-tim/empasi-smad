@@ -45,7 +45,7 @@ export const FOOD_GROUPS = [
     category: 'Kalsium & Lemak',
     badge: 'Pertumbuhan Tulang',
     examples: ['Susu formula (sesuai usia)', 'Susu sapi UHT (anak >=1 tahun)', 'Keju cheddar/pasteurisasi', 'Yogurt tawar/plain'],
-    tips: 'Bagi anak yang tidak menyusu ASI, susu formula atau olahan susu minimal 2 kali sehari.',
+    tips: 'Bagi anak non-ASI (sudah tidak mendapat ASI), susu formula atau olahan susu minimal 2 kali sehari.',
   },
   {
     id: 'flesh_foods',

@@ -209,7 +209,7 @@ export default function SmadCheckScreen({ navigation }) {
               }}
               style={[
                 styles.segmentedTab,
-                !isBreastfeeding && styles.segmentedTabDangerActive,
+                !isBreastfeeding && styles.segmentedTabActive,
               ]}
               activeOpacity={0.8}
             >
@@ -219,7 +219,7 @@ export default function SmadCheckScreen({ navigation }) {
                   !isBreastfeeding && styles.segmentedTextActive,
                 ]}
               >
-                Tidak Menyusu 🍼
+                Tidak / Non-ASI 🍼
               </Text>
             </TouchableOpacity>
           </View>
@@ -383,8 +383,8 @@ export default function SmadCheckScreen({ navigation }) {
               </View>
             </View>
             <Text style={styles.questionSubtitle}>
-              Karena tidak menyusu ASI: berapa kali si kecil mendapat susu
-              formula/olahan susu kemarin?
+              Untuk anak non-ASI / sufor: berapa kali si kecil mendapat susu
+              formula atau olahan susu kemarin?
             </Text>
             <StepperCounter
               value={milkFrequency}

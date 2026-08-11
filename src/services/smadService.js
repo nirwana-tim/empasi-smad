@@ -73,7 +73,7 @@ export function evaluateSMAD({
   if (!isBreastfeeding && !isMmffPass) {
     recommendations.push({
       type: 'mmff',
-      text: 'Untuk anak yang sudah tidak menyusu ASI, pastikan memberikan susu formula atau produk olahan susu (keju/yogurt) minimal 2 kali sehari.',
+      text: 'Untuk anak non-ASI (sudah tidak mendapat ASI), pastikan memberikan susu formula atau produk olahan susu (keju/yogurt) minimal 2 kali sehari.',
       highlight: 'Susu membantu memenuhi kebutuhan kalsium, lemak, dan energi harian si kecil.',
     });
   }

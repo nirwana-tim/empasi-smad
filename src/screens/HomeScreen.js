@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,12 +8,17 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useAudioPlayer, setAudioModeAsync } from 'expo-audio';
 import ScreenContainer from '../components/common/ScreenContainer';
 import { COLORS, FONTS, SHADOWS } from '../constants/theme';
 
 const { width } = Dimensions.get('window');
 const cardMargin = 8;
 const cardWidth = (width - 32 - (cardMargin * 2)) / 2;
+
+// Flag sesi: hanya bernilai false saat aplikasi baru pertama kali dibuka/dijalankan
+let hasAutoPlayedIntroMusic = false;
 
 function MenuButton({ imageSource, onPress, style }) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -54,6 +59,41 @@ function MenuButton({ imageSource, onPress, style }) {
 }
 
 export default function HomeScreen({ navigation }) {
+  // Inisialisasi Audio Player dengan file Asset/music.mpeg
+  const player = useAudioPlayer(require('../../Asset/music.mpeg'));
+
+  // Set audio mode agar dapat berbunyi meskipun mode silent di iOS
+  useEffect(() => {
+    setAudioModeAsync({ playsInSilentMode: true }).catch(() => {});
+  }, []);
+
+  // Putar musik otomatis HANYA satu kali saat pertama kali masuk ke Beranda
+  useEffect(() => {
+    if (!hasAutoPlayedIntroMusic && player) {
+      hasAutoPlayedIntroMusic = true;
+      try {
+        player.play();
+      } catch (err) {
+        console.log('Autoplay audio notice:', err);
+      }
+    }
+  }, [player]);
+
+  // Hentikan/pause musik saat berpindah ke menu/layar lain agar tidak mengganggu
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        try {
+          if (player) {
+            player.pause();
+          }
+        } catch (err) {
+          // ignore
+        }
+      };
+    }, [player])
+  );
+
   return (
     <ScreenContainer backgroundImage={require('../../Asset/defaultbg.png')}>
       {/* Header Banner - BERANDA */}
